@@ -1,0 +1,179 @@
+generated: '2026-09-19'
+method: probed
+source: https://agent402.dev/.well-known/x402
+corroboration:
+  - openapi/agent402-dev-openapi.yml            # x-price and x-payment-info.price on the eight paid operations agree with the manifest
+  - https://agent402.dev/meta.json              # resources[] priceAmount / amountAtomic
+  - https://agent402.dev/api/product            # primary product: priceUsd 5.00, amountAtomic 5000000, Payan offer priceCents 500
+  - https://agent402.dev/llms.txt               # the same eight prices in prose
+  - https://agent402.dev/                       # "Resource Catalog" table; "Usage-Based Spend"
+  - 'live 402 challenges 2026-09-20 (amount 1000000 on /url-evidence, 5000000 on /site-release-audit)'
+  - https://agent402.dev/pricing                # 404 — there is no pricing page; the manifest is the price list and the provider says to treat it as authoritative
+checked: '2026-09-19'
+summary: >-
+  Pure pay-per-call. There are no tiers, subscriptions, quotas, free allowances, volume discounts or
+  enterprise contracts — one usage-based plan whose entries are the eight priced resources, each with a
+  fixed USD-denominated price settled in USDC on Base mainnet (eip155:8453) under the x402 v2 exact scheme,
+  payable to 0xb0BbF890375B2ea1C2812887aE0331DD82eee92c with a 300-second authorization window. Prices are
+  read from the machine-readable manifest and cross-checked against the OpenAPI, meta.json, product.json,
+  llms.txt and two live challenges; all sources agree. Four support routes and all discovery/telemetry
+  endpoints are free. The single primary product (5.00 USDC) is also sold through the Payan agents-only
+  marketplace at the same price (priceCents 500).
+plan_count: 1
+currency: USD
+settlement_currency: USDC
+plans:
+  - id: pay-per-call
+    name: Pay per call (x402 v2, USDC on Base)
+    type: usage-based
+    price: variable
+    billing_period: per-request
+    key_required: false
+    account_required: false
+    wallet_required: true
+    included_quota: none
+    overage: not-applicable
+    payment:
+      protocol: x402
+      version: 2
+      scheme: exact
+      network: eip155:8453
+      asset: {symbol: USDC, contract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'}
+      pay_to: '0xb0BbF890375B2ea1C2812887aE0331DD82eee92c'
+      max_timeout_seconds: 300
+      alternate_route: {provider: Payan, offer_id: kh70zbzh8m5awkegpvn7tc82798aed20, price_cents: 500, url: https://payanagent.com/x402/kh70zbzh8m5awkegpvn7tc82798aed20, scope: 'siteReleaseAudit only; agents-only, not a browser checkout'}
+    entries:
+      - label: 'AI Discovery Site Audit — AEO/GEO Fix Pack'
+        name: site-release-audit
+        operation: siteReleaseAudit
+        type: metered
+        metric: call
+        method: POST
+        resource: https://agent402.dev/site-release-audit
+        price: '5.00 USD'
+        price_display: '$5.00'
+        amount_atomic: '5000000'
+        currency: USDC
+        scheme: exact
+        network: eip155:8453
+        max_timeout_seconds: 300
+        mime_type: application/json
+      - label: 'Deterministic Task Priority & Day Scheduler'
+        name: task-day-plan
+        operation: taskDayPlan
+        type: metered
+        metric: call
+        method: POST
+        resource: https://agent402.dev/task-day-plan
+        price: '0.01 USD'
+        price_display: '$0.01'
+        amount_atomic: '10000'
+        currency: USDC
+        scheme: exact
+        network: eip155:8453
+        max_timeout_seconds: 300
+        mime_type: application/json
+      - label: 'x402 Endpoint Health Check — v2, Base USDC & Resource Binding'
+        name: x402-health
+        operation: x402Health
+        type: metered
+        metric: call
+        method: POST
+        resource: https://agent402.dev/x402-health
+        price: '0.01 USD'
+        price_display: '$0.01'
+        amount_atomic: '10000'
+        currency: USDC
+        scheme: exact
+        network: eip155:8453
+        max_timeout_seconds: 300
+        mime_type: application/json
+      - label: 'Website Security-Header Preflight — 7 HEAD Checks'
+        name: website-preflight
+        operation: websitePreflight
+        type: metered
+        metric: call
+        method: POST
+        resource: https://agent402.dev/website-preflight
+        price: '0.05 USD'
+        price_display: '$0.05'
+        amount_atomic: '50000'
+        currency: USDC
+        scheme: exact
+        network: eip155:8453
+        max_timeout_seconds: 300
+        mime_type: application/json
+      - label: 'Verified URL Evidence Snapshot — HTTP, TLS & SHA-256'
+        name: url-evidence
+        operation: verifiedUrlEvidence
+        type: metered
+        metric: call
+        method: GET
+        resource: https://agent402.dev/url-evidence
+        price: '1.00 USD'
+        price_display: '$1.00'
+        amount_atomic: '1000000'
+        currency: USDC
+        scheme: exact
+        network: eip155:8453
+        max_timeout_seconds: 300
+        mime_type: application/json
+      - label: 'x402 Endpoint Launch-Readiness Audit — v2 Base USDC'
+        name: audit-x402
+        operation: auditX402
+        type: metered
+        metric: call
+        method: POST
+        resource: https://agent402.dev/audit-x402
+        price: '5.99 USD'
+        price_display: '$5.99'
+        amount_atomic: '5990000'
+        currency: USDC
+        scheme: exact
+        network: eip155:8453
+        max_timeout_seconds: 300
+        mime_type: application/json
+      - label: 'Printable Fantasy Quest-Card Deck + Offline Workshop'
+        name: download
+        operation: downloadWayfarersDeck
+        type: metered
+        metric: call
+        method: GET
+        resource: https://agent402.dev/download
+        price: '5.99 USD'
+        price_display: '$5.99'
+        amount_atomic: '5990000'
+        currency: USDC
+        scheme: exact
+        network: eip155:8453
+        max_timeout_seconds: 300
+        mime_type: application/zip
+      - label: 'Bulk QR Code Generator Pack — CSV/TSV/JSON to SVG/PNG/A4'
+        name: qr-campaign-pack
+        operation: downloadQrCampaignPack
+        type: metered
+        metric: call
+        method: GET
+        resource: https://agent402.dev/qr-campaign-pack
+        price: '5.99 USD'
+        price_display: '$5.99'
+        amount_atomic: '5990000'
+        currency: USDC
+        scheme: exact
+        network: eip155:8453
+        max_timeout_seconds: 300
+        mime_type: application/zip
+    free_entries:
+      - {operation: siteReleaseAuditEligibility, resource: 'POST /site-release-audit/eligibility', price: 0, note: 'exact-body pre-payment check, 5-minute validity'}
+      - {operation: siteReleaseAuditSample, resource: 'GET /site-release-audit/sample.json', price: 0}
+      - {operation: siteReleaseAuditMethodology, resource: 'GET /site-release-audit/methodology.json', price: 0}
+      - {operation: siteReleaseAuditCaseStudy, resource: 'GET /site-release-audit/proof/v1/case-study.json', price: 0}
+      - {resource: '/health, /metrics, /pmf/scorecard, /meta.json, /api/product, /openapi.json, /.well-known/x402, /llms.txt', price: 0, note: 'outside the OpenAPI'}
+    positioning_verbatim: 'Usage-Based Spend — Per-resource pricing is explicit in the OpenAPI contract, x402 manifest, and each unpaid 402 challenge.'
+    authority_verbatim: 'Treat the x402 manifest and each 402 PAYMENT-REQUIRED response as authoritative.'
+    refunds: none (see conventions/ reversibility)
+operator_side_policies_observed:
+  note: 'Published by /health; these describe the OPERATOR''s own spend and abuse controls, not buyer pricing, and are recorded only because they are public.'
+  daily_budget_cap: '$10.00'
+  max_usd_per_request: '$0.010'
+  variable_cost_usd_per_audit: 0   # /api/product variableCostUsd

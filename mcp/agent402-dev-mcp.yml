@@ -1,0 +1,125 @@
+generated: '2026-09-19'
+method: derived
+status: candidate
+checked: '2026-09-19'
+source: openapi/agent402-dev-openapi.yml (12 operations, one candidate tool each)
+disclaimer: >-
+  agent402.dev DOES NOT CURRENTLY PUBLISH AN MCP SERVER — and, unusually, it once did and took it down on
+  purpose. This file records that evidence first, then an API-Evangelist-derived candidate tool list mapped
+  one-to-one from the 12 OpenAPI operations. Nothing in tools[] is an agent402.dev product or endorsement;
+  no MCP endpoint exists. The provider's own design statement on its homepage is "Seven direct resources
+  instead of a session-oriented gateway" and "bounded request and response contracts without a gateway
+  session", so a candidate here runs against a stated choice, not a gap.
+retired_surface:
+  finding: >-
+    /mcp, /mcp/ and /.well-known/mcp.json all answer HTTP 410 Gone (nginx) to GET and to a POST tools/list
+    with Accept: application/json, text/event-stream. 410 is the status a server sends for a resource that
+    existed and was permanently removed; every other unknown path on this host answers 404 text/plain. Two
+    more residues corroborate it: the homepage response still carries
+    "access-control-expose-headers: mcp-session-id,mcp-protocol-version", and /health reports "tools": 0
+    next to x402Enabled: true. /meta.json declares "mode": "direct-only". No document on the site names the
+    former tool list, so nothing about it is recorded as fact.
+  probes:
+    - {url: https://agent402.dev/mcp, method: GET, http_status: 410}
+    - {url: https://agent402.dev/mcp, method: 'POST tools/list', http_status: 410}
+    - {url: https://agent402.dev/mcp/, method: 'POST tools/list', http_status: 410}
+    - {url: https://agent402.dev/.well-known/mcp.json, method: GET, http_status: 410}
+    - {url: https://agent402.dev/.well-known/mcp.json, method: 'POST tools/list', http_status: 410}
+    - {url: https://agent402.dev/.well-known/mcp, method: GET, http_status: 404}
+    - {url: https://agent402.dev/sse, method: 'POST tools/list', http_status: 404}
+    - {url: https://mcp.agent402.dev/, method: GET, http_status: 0, note: DNS does not resolve}
+    - {url: https://agent402.dev/.well-known/oauth-protected-resource, method: GET, http_status: 404}
+    - {url: https://agent402.dev/.well-known/oauth-authorization-server, method: GET, http_status: 404}
+  registries: 'registry.modelcontextprotocol.io was not consulted for a server that the provider has removed; the npm packages agent402-mcp / agent402-client belong to agent402.tools (Havok Holdings LLC), a DIFFERENT company — see packages/.'
+pointer_basis: >-
+  Wired as X-MCPServerCandidate, never MCPServer: a 12-point agent-readiness dimension reads MCPServer as
+  "an agent can reach this server now", and it cannot. The retirement is recorded here rather than under
+  X-MCPServerRetired because no source names what the retired server exposed.
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: none
+  verified: probed
+  note: 'none = we derived a candidate; the provider ships no server. Were one to exist it would be x402-paid (PAYMENT-SIGNATURE) like the HTTP resources it would wrap.'
+server:
+  name: agent402-dev
+  transport: streamable-http
+  url: null
+  run_by: none
+transport_proposed: streamable-http
+auth_proposed: 'x402 v2 per tool call — each tool inherits the price and 402 challenge of its backing operation; four tools (eligibility, sample, methodology, case-study) are free'
+tools:
+  - name: taskDayPlan
+    description: 'Prioritize and schedule up to 50 tasks for $0.01'
+    method: POST
+    path: /task-day-plan
+    price: "$0.01"
+    source_operation: openapi/agent402-dev-openapi.yml#taskDayPlan
+  - name: websitePreflight
+    description: 'Preflight one public website with seven HEAD-only checks'
+    method: POST
+    path: /website-preflight
+    price: "$0.05"
+    source_operation: openapi/agent402-dev-openapi.yml#websitePreflight
+  - name: verifiedUrlEvidence
+    description: 'Capture bounded HTTP, TLS, and SHA-256 evidence for $1'
+    method: GET
+    path: /url-evidence
+    price: "$1.00"
+    source_operation: openapi/agent402-dev-openapi.yml#verifiedUrlEvidence
+  - name: siteReleaseAudit
+    description: 'AI Discovery Site Audit — AEO/GEO Fix Pack for one public URL'
+    method: POST
+    path: /site-release-audit
+    price: "$5.00"
+    source_operation: openapi/agent402-dev-openapi.yml#siteReleaseAudit
+  - name: siteReleaseAuditEligibility
+    description: 'Check main-document delivery eligibility before paying'
+    method: POST
+    path: /site-release-audit/eligibility
+    price: free
+    source_operation: openapi/agent402-dev-openapi.yml#siteReleaseAuditEligibility
+  - name: siteReleaseAuditSample
+    description: 'Inspect a full production-format audit sample for example.com'
+    method: GET
+    path: /site-release-audit/sample.json
+    price: free
+    source_operation: openapi/agent402-dev-openapi.yml#siteReleaseAuditSample
+  - name: siteReleaseAuditMethodology
+    description: 'Inspect the live fixed audit method and fail-closed rules'
+    method: GET
+    path: /site-release-audit/methodology.json
+    price: free
+    source_operation: openapi/agent402-dev-openapi.yml#siteReleaseAuditMethodology
+  - name: siteReleaseAuditCaseStudy
+    description: 'Verify one frozen v1 base 22-check before/after audit case'
+    method: GET
+    path: /site-release-audit/proof/v1/case-study.json
+    price: free
+    source_operation: openapi/agent402-dev-openapi.yml#siteReleaseAuditCaseStudy
+  - name: auditX402
+    description: 'Audit one public x402 v2 GET endpoint'
+    method: POST
+    path: /audit-x402
+    price: "$5.99"
+    source_operation: openapi/agent402-dev-openapi.yml#auditX402
+  - name: x402Health
+    description: 'Check one public x402 GET endpoint for $0.01'
+    method: POST
+    path: /x402-health
+    price: "$0.01"
+    source_operation: openapi/agent402-dev-openapi.yml#x402Health
+  - name: downloadWayfarersDeck
+    description: 'Download Wayfarer''s Deck quest-card kit'
+    method: GET
+    path: /download
+    price: "$5.99"
+    source_operation: openapi/agent402-dev-openapi.yml#downloadWayfarersDeck
+  - name: downloadQrCampaignPack
+    description: 'Download the Bulk QR Campaign Pack'
+    method: GET
+    path: /qr-campaign-pack
+    price: "$5.99"
+    source_operation: openapi/agent402-dev-openapi.yml#downloadQrCampaignPack

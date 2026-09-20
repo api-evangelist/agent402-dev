@@ -1,0 +1,51 @@
+generated: '2026-09-19'
+method: searched
+source: >-
+  Artifacts harvested this run (well-known/, security/, lifecycle/, conformance/, sandbox/), the homepage,
+  /site-release-audit, /api/product, /meta.json, methodology.json, llms.txt, and live probes of the
+  conventional regulatory and legal paths on agent402.dev on 2026-09-19/20 UTC.
+checked: '2026-09-19'
+probe: true
+harvest_only: true
+harvest_only_note: >-
+  This file records WHAT the provider publishes. It does not decide which regimes reach the operator — that
+  is the Kin Score regime map's job, not this artifact's.
+summary: >-
+  Nothing. agent402.dev publishes no legal or regulatory page of any kind: /privacy, /terms, /legal,
+  /about, /contact, /accessibility, /accessibility/vpat, /legal/subprocessors, /legal/dpa, /privacy/requests,
+  /transparency, /trust, /security, /security/sbom, /docs/data-residency, /ai, /ai/transparency and
+  /legal/report-content all return the nginx text/plain 404, and neither the homepage nor the product page
+  links to a terms, privacy or contact page. The operator is not named anywhere (the agent card's provider
+  block says only "agent402.dev"). What exists is product-level prose that touches privacy and scope — data
+  minimisation statements about the audit ("response content is never retained or returned", "The page
+  never receives or stores your private key") and an explicit limitations line disclaiming any WCAG,
+  compliance or legal guarantee — which are recorded below as statements, not as signals. Empty signals is
+  the measurement.
+signals: {}
+probes:
+  - {path: /privacy, status: 404}
+  - {path: /terms, status: 404}
+  - {path: /about, status: 404}
+  - {path: /contact, status: 404}
+  - {path: /support, status: 404}
+  - {path: /accessibility, status: 404}
+  - {path: /accessibility/vpat, status: 404}
+  - {path: /legal/subprocessors, status: 404}
+  - {path: /legal/dpa, status: 404}
+  - {path: /privacy/requests, status: 404}
+  - {path: /transparency, status: 404}
+  - {path: /trust, status: 404}
+  - {path: /security, status: 404}
+  - {path: /security/sbom, status: 404}
+  - {path: /docs/data-residency, status: 404}
+  - {path: /ai, status: 404}
+  - {path: /ai/transparency, status: 404}
+  - {path: /legal/report-content, status: 404}
+  - {path: /humans.txt, status: 404}
+  - {path: /.well-known/security.txt, status: 404}
+prose_statements_not_recorded_as_signals:
+  - {page: https://agent402.dev/api/product, field: limitations, verbatim: 'No ranking, citation, traffic, conversion, revenue, WCAG, penetration-test, compliance, or legal guarantee.'}
+  - {page: https://agent402.dev/site-release-audit, verbatim: 'The page never receives or stores your private key, and the next link only opens the free eligibility step.'}
+  - {page: 'https://agent402.dev/url-evidence (402 challenge, bazaar output example scope)', verbatim: 'At most the first 128 KiB is streamed into SHA-256; response content is never retained or returned.'}
+  - {page: https://agent402.dev/site-release-audit/methodology.json, field: observation, verbatim: 'javascriptExecuted: false, subresourcesFetched: false — the audit fetches one credential-free public page and three root files and nothing else'}
+  - {page: https://agent402.dev/.well-known/agent-card.json, field: provider.organization, verbatim: 'agent402.dev', note: 'the only operator identification on the whole surface'}

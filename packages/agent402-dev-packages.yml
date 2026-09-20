@@ -1,0 +1,90 @@
+generated: '2026-09-19'
+method: searched
+source: >-
+  Registry metadata read unauthenticated on 2026-09-19 — registry.npmjs.org (search API and the
+  @payanagent/sdk, @x402/fetch, @x402/evm, viem and agent402-mcp package documents), pypi.org/pypi/agent402/json,
+  api.github.com/search/repositories?q=agent402 and api.github.com/users/agent402 — plus the provider's own
+  /api/product paymentClient block, the /site-release-audit "Reviewed Node fallback" section, llms.txt and
+  the OpenAPI.
+checked: '2026-09-19'
+summary:
+  first_party_package_count: 0
+  official_client_sdk_count: 0
+  third_party_package_count: 4
+  note: >-
+    agent402.dev publishes NO client library, SDK or CLI of its own on any registry, and its docs say so
+    implicitly: the contract is "read /openapi.json, read /.well-known/x402, call the resource, handle 402".
+    What it does publish is a pinned, reviewed BUYER recipe — the four third-party npm packages below, at
+    exact versions, installed with "npm install --save-exact" in a clean local Node project — for paying
+    the 5 USDC audit from Node when a browser wallet is not available. They are recorded as third-party
+    (official: false) with the version the provider pins AND the registry's current latest, because the
+    gap between the two is the currency signal: the provider pins @x402/fetch and @x402/evm at 2.18.0
+    while the registry is at 2.26.0 (2026-09-15). No SDKs pointer is emitted.
+  name_collision: >-
+    The npm namespace agent402-* (agent402-mcp 0.13.2, agent402-client 0.8.6, agent402-tollbooth,
+    agent402-langchain, agent402-openclaw, agent402-agentkit, agent402-llamaindex, agent402-anthropic-tools,
+    agent402-strands, agent402-openai-agents — all repository github.com/MikeyPetrillo/Agent402, author
+    "Havok Holdings LLC", homepage https://agent402.tools) belongs to agent402.tools, a DIFFERENT company
+    with a different product (a 500-tool MCP-native paid gateway). Nothing on agent402.dev references those
+    packages or that repository, and their metadata never names agent402.dev. They are NOT this provider's
+    and are not listed. PyPI agent402 does not exist (404). The GitHub search hits for "agent402"
+    (agent402-tech/agent402-frontend, Adaptive-Liquidity/agent402, and eight hackathon repos) show no link
+    to agent402.dev either; no GitHub organization is identified for this provider.
+packages:
+  - language: javascript
+    registry: npm
+    name: '@payanagent/sdk'
+    url: https://www.npmjs.com/package/@payanagent/sdk
+    install: npm install --save-exact @payanagent/sdk@0.2.2
+    official: false
+    kind: [buyer-client, x402-payment, third-party]
+    role: 'Payan agents-only checkout route for the site audit (offer kh70zbzh8m5awkegpvn7tc82798aed20)'
+    pinned_by_provider: 0.2.2
+    version: 0.3.0
+    published: '2026-08-02'
+    repository: https://github.com/derNif/payanagent
+    source: https://agent402.dev/api/product   # paymentClient.payanRecipePackages
+  - language: javascript
+    registry: npm
+    name: '@x402/fetch'
+    url: https://www.npmjs.com/package/@x402/fetch
+    install: npm install --save-exact @x402/fetch@2.18.0
+    official: false
+    kind: [buyer-client, x402-payment, third-party]
+    role: 'fetch wrapper that answers a 402 challenge with PAYMENT-SIGNATURE (x402 Foundation)'
+    pinned_by_provider: 2.18.0
+    version: 2.26.0
+    published: '2026-09-15'
+    repository: https://github.com/x402-foundation/x402
+    source: https://agent402.dev/api/product
+  - language: javascript
+    registry: npm
+    name: '@x402/evm'
+    url: https://www.npmjs.com/package/@x402/evm
+    install: npm install --save-exact @x402/evm@2.18.0
+    official: false
+    kind: [buyer-client, x402-payment, third-party]
+    role: 'EVM (Base, eip155:8453) signing scheme for the x402 exact payment'
+    pinned_by_provider: 2.18.0
+    version: 2.26.0
+    published: '2026-09-15'
+    repository: https://github.com/x402-foundation/x402
+    source: https://agent402.dev/api/product
+  - language: javascript
+    registry: npm
+    name: viem
+    url: https://www.npmjs.com/package/viem
+    install: npm install --save-exact viem@2.55.1
+    official: false
+    kind: [wallet-client, third-party]
+    role: 'wallet/account primitives used by the reviewed Node buyer script (WALLET_KEY env var)'
+    pinned_by_provider: 2.55.1
+    version: 2.56.8
+    published: '2026-09-18'
+    repository: https://github.com/wevm/viem
+    source: https://agent402.dev/site-release-audit
+registries_checked_with_no_first_party_result:
+  - {registry: npm, query: 'agent402', result: '10 packages, all agent402.tools (Havok Holdings LLC) — unrelated'}
+  - {registry: pypi, query: 'agent402', status: 404}
+  - {registry: github, query: 'agent402', result: '15 repositories, none linked to agent402.dev'}
+  - {registry: github-user, query: 'agent402', status: 200, note: 'a user named agent402 exists; nothing ties it to this domain and it is not claimed'}

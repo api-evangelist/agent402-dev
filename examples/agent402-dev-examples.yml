@@ -1,0 +1,50 @@
+generated: '2026-09-19'
+method: searched
+source: >-
+  Request/response examples the provider publishes: the live production-format sample report at
+  https://agent402.dev/site-release-audit/sample.json (saved verbatim), the worked UrlEvidenceReport example
+  embedded in the /url-evidence 402 challenge's extensions.bazaar.info.output.example (the decoded
+  PAYMENT-REQUIRED header saved verbatim), the input examples in /meta.json and /api/product, and the
+  eligibility responses this pipeline observed live on 2026-09-20. The OpenAPI itself carries no example or
+  examples keys. Nothing here was invented.
+api: openapi/agent402-dev-openapi.yml
+checked: '2026-09-19'
+files:
+  - {file: agent402-dev-site-release-audit-sample.json, operation: siteReleaseAudit, kind: response-200, schema: '#/components/schemas/WebsiteEvidenceReport', source: https://agent402.dev/site-release-audit/sample.json, bytes: 15515, note: 'regenerated continuously by the provider (observedAt 2026-09-20T02:31Z at fetch); the exact shape a paid call returns, for the fixed target example.com'}
+  - {file: agent402-dev-url-evidence-402-challenge.json, operation: verifiedUrlEvidence, kind: 402-challenge, source: 'PAYMENT-REQUIRED header of GET https://agent402.dev/url-evidence?url=https://example.com/ (base64-decoded)', bytes: 3770, note: 'carries accepts[] and extensions.bazaar.info with the input queryParams example and a full output example (product Verified URL Evidence Snapshot 1.1.0, observedAt 2026-07-14T12:00:00Z, 8 checks)'}
+examples:
+- operationId: siteReleaseAuditEligibility
+  title: Free eligibility check for the exact body you intend to pay for
+  source: https://agent402.dev/api/product   # eligibility.input.example
+  request:
+    method: POST
+    url: https://agent402.dev/site-release-audit/eligibility
+    headers: {Content-Type: application/json}
+    body: {url: 'https://example.com/'}
+  response:
+    status: 200
+    observed: '2026-09-20T02:49:40Z'
+    body_summary: {schemaVersion: '1.0.0', checkKind: pre-payment-delivery-eligibility, eligibility: eligible, reason: main_document_deliverable, validUntil: '+5 minutes', inputSha256: fc3bcafb91730693484452065cac4cc17786f2307976d83295ada192d2f86e8e, observation: {method: GET, redirectCount: 0, status: 200, contentType: text/html, rootRequests: 0}, purchaseBinding: {offerId: kh70zbzh8m5awkegpvn7tc82798aed20, priceCents: 500, amountAtomic: '5000000', directRoute: /site-release-audit}}
+- operationId: siteReleaseAuditEligibility
+  title: Ineligible body (not a URL)
+  request: {method: POST, url: https://agent402.dev/site-release-audit/eligibility, body: {url: notaurl}}
+  response: {status: 422, observed: '2026-09-20T02:56:51Z', body_summary: {eligibility: ineligible, reason: invalid_target}}
+- operationId: siteReleaseAudit
+  title: Unpaid request — the 402 challenge (plain curl never pays)
+  source: https://agent402.dev/site-release-audit   # "Direct 402 probe"
+  request: {method: POST, url: https://agent402.dev/site-release-audit, headers: {Content-Type: application/json}, body: {url: 'https://example.com/'}}
+  response:
+    status: 402
+    headers: {PAYMENT-REQUIRED: '<base64 JSON: x402Version 2, accepts[0] {scheme exact, network eip155:8453, amount "5000000", asset 0x8335…2913, payTo 0xb0Bb…e92c, maxTimeoutSeconds 300}>'}
+    body: {schemaVersion: '1.0.0', product: 'AI Discovery Site Audit — AEO/GEO Fix Pack', checkKind: x402-checkout-body-binding, resource: /site-release-audit, inputSha256: fc3bcafb91730693484452065cac4cc17786f2307976d83295ada192d2f86e8e, paymentWillNotSettle: true}
+- operationId: siteReleaseAudit
+  title: Paid response shape (provider's live sample for example.com)
+  source: https://agent402.dev/site-release-audit/sample.json
+  response: {status: 200, file: agent402-dev-site-release-audit-sample.json, top_level_keys: [schemaVersion, product, version, observedAt, target, http, tls, summary, checks, aiDiscovery, scope, caveats, dossierId, reportSha256]}
+- operationId: verifiedUrlEvidence
+  title: Unpaid request — 402 challenge with Bazaar input schema and worked output
+  request: {method: GET, url: 'https://agent402.dev/url-evidence?url=https://example.com/&content_fingerprint=true'}
+  response: {status: 402, headers: {PAYMENT-REQUIRED: 'see agent402-dev-url-evidence-402-challenge.json'}, body: {schemaVersion: '1.0.0', product: Verified URL Evidence Snapshot, resource: /url-evidence, method: GET, price: {amountAtomic: '1000000', display: 1.00 USDC, network: eip155:8453}, defaultQuery: {url: 'https://example.com/', content_fingerprint: true}, paymentRequired: true, x402ClientRequired: true, authoritativePaymentTerms: PAYMENT-REQUIRED response header}}
+- operationId: taskDayPlan
+  title: Request shape (from the schema; no provider example published)
+  note: 'The provider publishes no worked TaskDayPlanInput; the required fields are tasks, available_minutes, start_at (RFC 3339) and strategy — see the schema. No example body is invented here.'

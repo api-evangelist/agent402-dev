@@ -1,0 +1,127 @@
+generated: '2026-09-19'
+method: searched
+source: >-
+  openapi/agent402-dev-openapi.yml (fetched from https://agent402.dev/openapi.json), well-known/ (live
+  probes), well-known/agent402-dev-x402.json, a2a/agent402-dev-agent-card.json, https://agent402.dev/llms.txt,
+  /meta.json, /api/product, /robots.txt, /sitemap.xml, the homepage docs, and live unauthenticated responses
+  observed 2026-09-20 UTC (402 challenges on GET /url-evidence, POST /site-release-audit, GET /download and
+  POST /website-preflight; 200/422 on POST /site-release-audit/eligibility; 404 on unknown paths).
+checked: '2026-09-19'
+summary: >-
+  agent402.dev is a conformant x402 v2 SELLER — the market's domain standard for machine payments — and it
+  can be checked from the outside without spending: 8 of its 12 OpenAPI operations declare
+  x-payment-info.protocols[].x402 and a 402 response, the /.well-known/x402 manifest carries an accepts[]
+  block per resource, and every paid route answers an unpaid request with HTTP 402 plus a base64 JSON
+  PAYMENT-REQUIRED header whose accepts[] names scheme exact, network eip155:8453, the USDC asset contract,
+  a payTo address, an atomic amount and maxTimeoutSeconds 300. It also serves a conformant A2A 0.3.0 Agent
+  Card, an OpenAPI 3.1.0 contract, an llms.txt, robots.txt + sitemap.xml and a Coinbase-Bazaar extension
+  block inside the challenge. It conforms to none of the account-era conventions, and has no reason to:
+  there are no accounts, so no OAuth 2.0 / OIDC / RFC 8414 / RFC 9728 metadata, no API keys, no RFC 9116
+  security.txt, no RFC 9727 api-catalog, no RFC 9457 problem details, no AsyncAPI, and the former MCP
+  surface answers 410 Gone.
+standards:
+- id: x402-v2
+  conforms: true
+  role: seller
+  evidence: >-
+    CONTRACT — openapi/agent402-dev-openapi.yml: x-payment-info {price: {mode: fixed, currency: USD, amount},
+    protocols: [{x402: {}}]} and x-price on 8 operations (taskDayPlan, websitePreflight, verifiedUrlEvidence, siteReleaseAudit, auditX402, x402Health, downloadWayfarersDeck, downloadQrCampaignPack); a 402 response on
+    each; x-payment-client-guidance {required: true, protocolVersion: 2, requestHeader: PAYMENT-SIGNATURE}
+    on siteReleaseAudit. MANIFEST — well-known/agent402-dev-x402.json: x402Version 2, 8 items with accepts[]
+    {scheme: exact, network: eip155:8453, asset: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913, payTo:
+    0xb0BbF890375B2ea1C2812887aE0331DD82eee92c, amount, maxTimeoutSeconds: 300}. LIVE — GET
+    https://agent402.dev/url-evidence?url=https://example.com/ -> 402, PAYMENT-REQUIRED header decoding to
+    {x402Version: 2, error: Payment required, resource: {url, description, mimeType}, accepts: [same
+    fields + extra: {name: USD Coin, version: '2'}], extensions: {bazaar}}; POST /site-release-audit ->
+    402 with the same shape and serviceName "Agent402 Site Audit"; GET /download -> 402. Access-Control-
+    Expose-Headers lists PAYMENT-REQUIRED, PAYMENT-RESPONSE. CONTROL — unknown paths answer 404 text/plain
+    and the four free routes answer 200, so this is a targeted 402, not a catch-all payment wrapper.
+- id: x402-bazaar-extension
+  conforms: true
+  evidence: >-
+    The decoded 402 challenge for GET /url-evidence carries extensions.bazaar.info with input {type: http,
+    method: GET, queryParams} and output {type: json, example: a full UrlEvidenceReport} plus, at
+    extensions.bazaar.schema, a JSON Schema ($schema https://json-schema.org/draft/2020-12/schema) for the input/output
+    envelope — the Coinbase Bazaar discovery
+    shape that lets an x402 indexer register the resource. Saved verbatim as
+    examples/agent402-dev-url-evidence-402-challenge.json.
+- id: a2a-agent-card
+  conforms: true
+  grade: conformant
+  evidence: 'https://agent402.dev/.well-known/agent-card.json — 200, application/json, 2,576 B; protocolVersion 0.3.0, capabilities object, skills array (2) with per-skill inputModes/outputModes, preferredTransport JSONRPC, defaultInputModes/defaultOutputModes, additionalInterfaces, provider, documentationUrl. Identical bytes at the legacy /.well-known/agent.json. Graded in a2a/agent402-dev-a2a.yml.'
+- id: a2a-jsonrpc-endpoint
+  conforms: true
+  evidence: 'POST https://agent402.dev/a2a/site-audit-discovery with a message/send envelope -> 200 {"jsonrpc":"2.0","id":1,"error":{"code":-32602,"message":"Invalid method parameters"}} — a live JSON-RPC 2.0 responder with a spec-standard error code; GET -> 404 JSON.'
+- id: openapi-3.1
+  conforms: true
+  evidence: 'https://agent402.dev/openapi.json — openapi 3.1.0, info.version 1.7.0, servers [https://agent402.dev], 12 operations all carrying operationId, summary, description and tags, 2xx + 4xx/5xx responses, 14 components.schemas with required[] lists. Gaps a Spectral run would flag: no securitySchemes/security (payment is the auth), no top-level tags[] declarations, no examples, 402 responses declared with a description but no content schema.'
+- id: llms-txt
+  conforms: true
+  evidence: 'https://agent402.dev/llms.txt — 200, text/markdown, 2,036 B; H1 "# agent402" then H2 sections (Primary Product, Direct Discovery, Standalone x402 HTTP Resources, Health) of link/price lines. Deviation from llmstxt.org: the summary line under the H1 is a plain paragraph, not a blockquote. Saved verbatim to llms/. No llms-full.txt (404).'
+- id: rfc8615-well-known
+  conforms: true
+  evidence: 'Two provider documents under /.well-known/ (agent-card.json, x402) with correct JSON content types; see well-known/agent402-dev-well-known.yml.'
+- id: robots-txt-sitemap
+  conforms: true
+  evidence: '/robots.txt: "User-agent: * / Allow: / / Sitemap: https://agent402.dev/sitemap.xml"; /sitemap.xml lists 16 URLs including /openapi.json, /.well-known/x402, /llms.txt and /meta.json — the machine surfaces are deliberately indexed. Paid and eligibility responses carry X-Robots-Tag: noindex, nofollow.'
+- id: cors
+  conforms: true
+  evidence: 'Observed on every API response: Access-Control-Allow-Origin: *, Allow-Methods GET, POST, OPTIONS, Allow-Headers Content-Type, PAYMENT-SIGNATURE, Expose-Headers PAYMENT-REQUIRED, PAYMENT-RESPONSE, X-Evidence-ID, X-Report-SHA256, X-Dossier-ID, Max-Age 600 — a browser-wallet buyer can pay from the page.'
+- id: rfc9110-retry-after
+  conforms: true
+  scope: partial
+  evidence: 'openapi siteReleaseAuditEligibility declares a 429 "Ephemeral client or target rate limit reached" with a Retry-After response header. No other operation declares 429, and no X-RateLimit-* / RateLimit-* header was observed. See rate-limits/.'
+- id: rfc9110-410-gone
+  conforms: true
+  scope: retired-surface
+  evidence: '/mcp, /mcp/ and /.well-known/mcp.json answer 410 Gone rather than 404 — the semantically correct signal for a permanently removed resource. It is the only retirement signalling the site does; see lifecycle/.'
+- id: mcp
+  conforms: false
+  evidence: 'No MCP server: 410 Gone on /mcp and /.well-known/mcp.json (GET and POST tools/list), 404 on /sse; /health reports tools: 0; /meta.json mode direct-only. See mcp/agent402-dev-mcp.yml.'
+- id: rfc9727-api-catalog
+  conforms: false
+  evidence: '/.well-known/api-catalog and /.well-known/api-catalog.json 404. The provider''s equivalent is the non-standard /meta.json endpoint map.'
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: '/.well-known/security.txt 404; /security 404; no disclosure contact anywhere on the site.'
+- id: oauth2
+  conforms: false
+  applicable: false
+  evidence: 'No RFC 8414 / RFC 9728 / OIDC discovery document; no securitySchemes in the OpenAPI or the agent card. Not applicable by design: "no account" — payment is the authorization (see authentication/).'
+- id: oidc
+  conforms: false
+  applicable: false
+  evidence: '/.well-known/openid-configuration 404.'
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: 'No application/problem+json anywhere. 4xx/5xx responses are declared with a description only (400, 502) or reuse the success schema (SiteAuditEligibility on 422/429/503); unknown paths answer text/plain "404 Not Found"; a malformed JSON body answers 422 with an eligibility object whose reason is invalid_input. See errors/.'
+- id: rfc8594-sunset-deprecation
+  conforms: false
+  evidence: 'No Sunset or Deprecation header, no deprecated: true operation, no versioning or deprecation policy page. The MCP retirement was communicated only by 410.'
+- id: asyncapi
+  conforms: false
+  applicable: false
+  evidence: 'No event, webhook or streaming surface; the agent card declares streaming: false and pushNotifications: false; /health alerting.webhookConfigured: false is the operator''s own outbound alerting, not a customer surface.'
+- id: apis-json
+  conforms: false
+  evidence: '/apis.json, /apis.yml and /.well-known/apis.json all 404.'
+- id: ucp-acp-agentic-commerce
+  conforms: false
+  evidence: '/.well-known/ucp.json and /.well-known/acp.json 404 — the provider sells to agents over x402, not over UCP/ACP.'
+domain_standards:
+  note: >-
+    REWARD-ONLY. The provider's market is agent-to-service micropayments, whose domain standard is x402
+    (HTTP 402 + PAYMENT-REQUIRED / PAYMENT-SIGNATURE, EIP-3009 exact scheme on Base). Unlike a verifier or a
+    facilitator, agent402.dev is a SELLER that declares the standard inside its own contract, so the
+    conformance is recorded with the exact spec locations rather than from a prose claim.
+  declared:
+    - id: x402-v2
+      conforms: true
+      spec_locations:
+        - 'openapi/agent402-dev-openapi.yml#/paths/~1site-release-audit/post/x-payment-info/protocols/0/x402'
+        - 'openapi/agent402-dev-openapi.yml#/paths/~1site-release-audit/post/x-payment-client-guidance (protocolVersion 2, requestHeader PAYMENT-SIGNATURE)'
+        - 'openapi/agent402-dev-openapi.yml#/paths/~1url-evidence/get/responses/402'
+        - 'well-known/agent402-dev-x402.json#/items/0/accepts/0 (scheme exact, network eip155:8453)'
+      operations_declaring: ["taskDayPlan", "websitePreflight", "verifiedUrlEvidence", "siteReleaseAudit", "auditX402", "x402Health", "downloadWayfarersDeck", "downloadQrCampaignPack"]
+      live_evidence: {url: 'https://agent402.dev/url-evidence?url=https://example.com/', status: 402, header: PAYMENT-REQUIRED}
+  not_claimed: [ERC-8004 (not referenced anywhere), AP2 (not referenced), UCP/ACP (404)]

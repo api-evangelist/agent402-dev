@@ -1,0 +1,47 @@
+generated: '2026-09-19'
+method: probed
+source: https://agent402.dev/health
+corroboration:
+  - openapi/agent402-dev-openapi.yml          # siteReleaseAuditEligibility 429 "Ephemeral client or target rate limit reached" + Retry-After header
+  - 'live responses 2026-09-20: no X-RateLimit-* / RateLimit-* header on any 200, 402 or 422; 15 rapid GET /health all 200'
+  - https://agent402.dev/                     # no prose limits anywhere in the human or agent docs
+checked: '2026-09-19'
+summary: >-
+  No rate limits are DOCUMENTED, but the limiter's configuration is PUBLISHED as data by the operator's
+  own /health endpoint: rateLimits {enabled: true, windowSeconds: 60, maxRequestsPerToolPerAgent:
+  12, maxRequestsPerToolPerWallet: 6} plus an anomaly policy (repeatThreshold 20 in
+  120 s -> block 300 s). The field names ("PerTool") are a residue of the retired MCP layer; whether the
+  same limiter fronts the direct HTTP resources is not stated, so the numbers are recorded as observed
+  configuration rather than as a buyer-facing commitment. The contract declares a 429 with Retry-After on
+  the free eligibility route only, scoped per client AND per target host. No runtime rate-limit header was
+  observed on any response, so an agent's only signal is the 429 itself and Retry-After when it arrives.
+limit_count: 2
+limits:
+  - name: Per tool per agent
+    scope: per-agent
+    metric: requests
+    limit: 12
+    window_seconds: 60
+    source: https://agent402.dev/health
+    basis: observed-configuration
+  - name: Per tool per wallet
+    scope: per-wallet
+    metric: requests
+    limit: 6
+    window_seconds: 60
+    source: https://agent402.dev/health
+    basis: observed-configuration
+declared_without_numbers:
+  - {operation: siteReleaseAuditEligibility, scope: 'per client and per target host', status: 429, headers: [Retry-After], verbatim: 'Ephemeral client or target rate limit reached'}
+anomaly_policy_observed: {enabled: true, repeat_threshold: 20, window_seconds: 120, block_seconds: 300, source: https://agent402.dev/health}
+response_headers:
+  declared: [Retry-After]
+  observed: []
+  note: 'No X-RateLimit-Limit/Remaining/Reset, no IETF RateLimit-Policy/RateLimit header on any observed response.'
+status_on_exhaustion: 429
+status_on_exhaustion_note: 'declared on siteReleaseAuditEligibility; undeclared for the paid routes'
+payload_bounds:
+  - {operation: verifiedUrlEvidence, bound: 'request-target <= 2300 bytes (2302 as JSON string); fingerprint <= 128 KiB'}
+  - {operation: siteReleaseAudit, bound: 'observation <= 512 KiB, <= 3 redirects, 12 s total; root files 64/128/256 KiB'}
+  - {operation: taskDayPlan, bound: '<= 50 tasks, <= 24 blocks'}
+observed_behaviour: '15 consecutive unauthenticated GET /health within ~2 s -> 15 x 200; no throttling reached.'

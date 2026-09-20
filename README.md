@@ -64,5 +64,12 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-agent402.dev is a company surfaced via the API Evangelist harvest backlog (source: a2a-registry) and added to the network as a stub for full-pipeline profiling.
+agent402.dev is a pay-per-call agent-commerce service that sells website release evidence and offline tools to AI agents over the x402 v2 protocol, settled in USDC on Base (eip155:8453) with no accounts or API keys. Its primary product is a 5.00 USDC AI Discovery Site Audit; seven auxiliary direct HTTP resources are priced from 0.01 to 5.99 USDC. The surface is published machine-first: an OpenAPI 3.1 contract, an x402 v2 manifest, a conformant A2A agent card, llms.txt and a JSON endpoint map. The operator is not named on the site.
+
 - https://agent402.dev/
+- OpenAPI: https://agent402.dev/openapi.json (12 operations) — `openapi/`
+- x402 manifest: https://agent402.dev/.well-known/x402 — `well-known/`
+- A2A agent card: https://agent402.dev/.well-known/agent-card.json (graded conformant) — `a2a/`
+- llms.txt: https://agent402.dev/llms.txt — `llms/`
+
+Profiled 2026-09-19 by the API Evangelist enrichment pipeline (local pass). Artifacts: `openapi/`, `a2a/`, `llms/`, `well-known/`, `mcp/` (candidate — the provider's MCP surface answers 410 Gone), `packages/`, `authentication/`, `conventions/`, `errors/`, `lifecycle/`, `conformance/`, `data-model/`, `sandbox/`, `plans/`, `rate-limits/`, `examples/`, `overlays/`, `skills/`, `regulatory/`, `agentic-access/`, `security/`.

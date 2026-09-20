@@ -1,0 +1,102 @@
+generated: '2026-09-19'
+method: derived
+source: openapi/agent402-dev-openapi.yml ($ref graph across 14 component schemas and 12 operations), plus the identifier fields observed in live responses
+checked: '2026-09-19'
+shape: stateless-request-response
+persistence: none-declared
+summary: >-
+  This API has no entity model in the CRUD sense. There are no resources to create, list, update or
+  delete, no ids a client holds between calls, and no relationships that outlive a request: each paid
+  route takes one input object (a URL, an x402 endpoint, or a task list) and returns one self-describing
+  report. The $ref graph is therefore 14 schemas in 3 has_many/has_one links, all of the form
+  "Report contains Check[]". What survives a call is an identifier (dossierId, evidenceId, plan_id, healthId,
+  auditId, caseStudyId) and a SHA-256 of the report — correlation handles, not addressable resources. The one
+  cross-call link is purchaseBinding on the free eligibility response (inputSha256 + offerId), which ties a
+  checked body to the paid call that follows within five minutes. The provider states it retains no
+  response content from the targets it observes; the only durable state it publishes is aggregate
+  settlement telemetry at /metrics.
+identifier_domains:
+  - {field: dossierId, header: X-Dossier-ID, produced_by: siteReleaseAudit, meaning: 'stable id of one Website Release Evidence Dossier'}
+  - {field: evidenceId, header: X-Evidence-ID, produced_by: [verifiedUrlEvidence, websitePreflight], meaning: 'stable id of one URL evidence snapshot'}
+  - {field: plan_id, produced_by: taskDayPlan}
+  - {field: healthId, produced_by: x402Health}
+  - {field: auditId, produced_by: auditX402}
+  - {field: caseStudyId, produced_by: siteReleaseAuditCaseStudy, note: immutable}
+  - {field: inputSha256, produced_by: siteReleaseAuditEligibility, meaning: 'SHA-256 of JSON.stringify({url}) — binds the checked body to the purchase'}
+  - {field: 'reportSha256 / report_sha256', header: X-Report-SHA256, produced_by: every report, meaning: 'integrity digest of the report itself'}
+  - {field: purchaseBinding.offerId, produced_by: siteReleaseAuditEligibility, meaning: 'Payan marketplace offer id (kh70zbzh8m5awkegpvn7tc82798aed20) for the alternate route'}
+entities:
+- name: TaskDayPlanInput
+  kind: request
+  required_fields: 4
+  fields: ["tasks", "available_minutes", "start_at", "strategy"]
+  used_by_operations: ["taskDayPlan"]
+- name: TaskDayPlanReport
+  kind: response
+  required_fields: 13
+  fields: ["schema_version", "product", "strategy", "start_at", "available_minutes", "scheduled_minutes", "remaining_minutes", "ranked_tasks", "blocks", "unscheduled", "summary", "plan_id", "report_sha256"]
+  returned_by: ["taskDayPlan:200"]
+- name: UrlEvidenceReport
+  kind: response
+  required_fields: 11
+  fields: ["product", "version", "observedAt", "target", "http", "tls", "contentEvidence", "summary", "checks", "scope", "evidenceId", "reportSha256"]
+  returned_by: ["verifiedUrlEvidence:200"]
+- name: PublicUrlInput
+  kind: request
+  required_fields: 1
+  fields: ["url"]
+  used_by_operations: ["websitePreflight", "siteReleaseAudit", "siteReleaseAuditEligibility"]
+- name: SiteAuditEligibility
+  kind: response
+  required_fields: 10
+  fields: ["schemaVersion", "product", "checkKind", "checkedAt", "validUntil", "eligibility", "reason", "inputSha256", "observation", "purchaseBinding"]
+  returned_by: ["siteReleaseAuditEligibility:200", "siteReleaseAuditEligibility:422", "siteReleaseAuditEligibility:429", "siteReleaseAuditEligibility:503"]
+- name: UrlPreflightCheck
+  kind: value-object
+  required_fields: 3
+  fields: ["id", "status", "message"]
+- name: UrlPreflightReport
+  kind: response
+  required_fields: 11
+  fields: ["product", "version", "observedAt", "target", "http", "tls", "summary", "checks", "scope", "evidenceId", "reportSha256"]
+  returned_by: ["websitePreflight:200"]
+  relationships:
+  - {from: UrlPreflightReport, to: UrlPreflightCheck, type: has_many, via: $ref}
+- name: X402AuditInput
+  kind: request
+  required_fields: 1
+  fields: ["url", "method"]
+  used_by_operations: ["auditX402", "x402Health"]
+- name: WebsiteAuditCheck
+  kind: value-object
+  required_fields: 8
+  fields: ["id", "section", "title", "status", "points", "earned", "evidence", "fix"]
+- name: WebsiteEvidenceReport
+  kind: response
+  required_fields: 11
+  fields: ["schemaVersion", "product", "observedAt", "target", "http", "tls", "summary", "checks", "aiDiscovery", "dossierId", "reportSha256"]
+  returned_by: ["siteReleaseAudit:200", "siteReleaseAuditSample:200"]
+  relationships:
+  - {from: WebsiteEvidenceReport, to: WebsiteAuditCheck, type: has_many, via: $ref}
+- name: SiteAuditCaseStudy
+  kind: response
+  required_fields: 11
+  fields: ["schemaVersion", "caseStudyId", "evidenceKind", "livePaidRouteUsed", "selfAuditBlocked", "sourceRepresentations", "patch", "reports", "delta", "caveats", "integrity"]
+  returned_by: ["siteReleaseAuditCaseStudy:200"]
+- name: X402AuditCheck
+  kind: value-object
+  required_fields: 3
+  fields: ["id", "status", "message", "remediation"]
+- name: X402HealthReport
+  kind: response
+  required_fields: 9
+  fields: ["product", "version", "healthId", "checkedAt", "target", "health", "payment", "disclaimer", "reportSha256"]
+  returned_by: ["x402Health:200"]
+- name: X402AuditReport
+  kind: response
+  required_fields: 11
+  fields: ["product", "version", "auditId", "auditedAt", "target", "summary", "payment", "checks", "clientSnippets", "disclaimer", "reportSha256"]
+  returned_by: ["auditX402:200"]
+  relationships:
+  - {from: X402AuditReport, to: X402AuditCheck, type: has_many, via: $ref}
+render: null

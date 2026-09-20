@@ -1,0 +1,133 @@
+generated: '2026-09-19'
+method: probed
+source: >-
+  Live GET probes of the named /.well-known/* path list (plus /apis.json, /apis.yml and the discovery
+  paths the site itself advertises) on both hosts the record knows, 2026-09-19/20 UTC. Every row is a
+  request that was issued; every status is the one returned.
+checked: '2026-09-19'
+summary:
+  hosts_probed: 2
+  documents_served: 3
+  note: >-
+    agent402.dev serves three real documents on the /.well-known/ surface: the A2A Agent Card at the
+    canonical path AND the identical bytes at the legacy /.well-known/agent.json, and an x402 v2 resource
+    manifest at /.well-known/x402 (11,281 bytes, x402Version 2, 8 priced items, payTo
+    0xb0BbF890375B2ea1C2812887aE0331DD82eee92c). Nothing else on the named list is served: no RFC 9116 security.txt,
+    no OIDC discovery, no RFC 8414 / RFC 9728 OAuth metadata (consistent with a service that has no
+    accounts or keys — payment IS the authorization), no RFC 9727 api-catalog, no ai-plugin.json, no
+    UCP/ACP/AAuth, no apis.json at any of the three paths. /.well-known/mcp.json answers 410 Gone — a
+    deliberate retirement signal, see mcp/. The apex also serves llms.txt, openapi.json, meta.json,
+    robots.txt and sitemap.xml at the domain root.
+  misses_that_matter:
+    - /.well-known/api-catalog (404) — the RFC 9727 linkset an agent would read first; the provider's own
+      equivalent is the non-standard /meta.json endpoint map
+    - /.well-known/security.txt (404) — no vulnerability-disclosure contact anywhere on the site
+    - /.well-known/apis.json, /apis.json, /apis.yml (404)
+pointer_basis: >-
+  WellKnown is emitted on the strength of two distinct, parsing, provider-authored documents under
+  /.well-known/ (the agent card and the x402 manifest). SecurityTxt is NOT emitted: no security.txt on
+  any host. The agent card is registered separately as AgentCard via a2a/agent402-dev-a2a.yml; the x402
+  manifest is registered as X-X402Discovery on the API entry. No api-catalog exists, so the RFC 9727
+  intent of well_known_catalog is not met and this note says so.
+host_set_note: >-
+  Website, API baseURL, the OpenAPI servers[0], the A2A endpoint host and the docs host are all the single
+  apex agent402.dev. There is no MCP host: /mcp and /.well-known/mcp.json answer 410 Gone and /health
+  reports tools: 0. No fetched document names an authorization_servers host. www.agent402.dev resolves
+  (A 135.181.250.81, the same address) but never returns an HTTP response on 443 or 80, so every path
+  there is status 0.
+path_echo_control: passed
+path_echo_control_note: 'GET /.well-known/agent402-dev-negative-control-9c1f3a7e.json -> 404 text/plain "404 Not Found", the same body every other miss returns, so the 200s are real documents, not a catch-all.'
+hosts:
+  - host: https://agent402.dev
+    roles: [website, docs, api-base, openapi-servers, a2a-card, a2a-endpoint]
+    documents:
+      - path: /.well-known/agent-card.json           # A2A 1.0.0 / RFC 8615
+        status: 200
+        file: ../a2a/agent402-dev-agent-card.json
+        content_type: application/json; charset=utf-8
+        bytes: 2576
+        standard: A2A Agent Card
+        note: Real AgentCard-shaped JSON object (protocolVersion 0.3.0, two skills). Graded conformant in a2a/agent402-dev-a2a.yml.
+      - path: /.well-known/agent.json                # pre-0.3 legacy path
+        status: 200
+        file: ../a2a/agent402-dev-agent-card.json
+        content_type: application/json; charset=utf-8
+        bytes: 2576
+        standard: A2A Agent Card (legacy path)
+        note: Byte-identical to the canonical path.
+      - path: /.well-known/x402                      # x402 v2 discovery manifest
+        status: 200
+        file: agent402-dev-x402.json
+        content_type: application/json; charset=utf-8
+        bytes: 11281
+        standard: x402 v2 resource manifest (Coinbase Bazaar shape)
+        note: 'x402Version 2; name ai-discovery-site-audit; primaryResource https://agent402.dev/site-release-audit; 8 items each with method, mimeType, metadata.price and accepts[] {scheme exact, network eip155:8453, amount, asset 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 (USDC), payTo, maxTimeoutSeconds 300}; a parallel resources[] array carries the same catalog.'
+      - path: /.well-known/security.txt              # RFC 9116
+        status: 404
+        content_type: text/plain
+      - path: /.well-known/openid-configuration      # OpenID Connect Discovery 1.0
+        status: 404
+      - path: /.well-known/oauth-authorization-server  # RFC 8414
+        status: 404
+      - path: /.well-known/oauth-protected-resource    # RFC 9728
+        status: 404
+      - path: /.well-known/api-catalog               # RFC 9727
+        status: 404
+      - path: /.well-known/api-catalog.json
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/ucp.json
+        status: 404
+      - path: /.well-known/acp.json
+        status: 404
+      - path: /.well-known/aauth-resource.json       # draft-hardt-oauth-aauth-protocol
+        status: 404
+      - path: /.well-known/apis.json                 # APIs.json
+        status: 404
+      - path: /apis.json
+        status: 404
+      - path: /apis.yml
+        status: 404
+      - path: /.well-known/mcp.json                  # MCP server card
+        status: 410
+        content_type: text/html
+        note: 410 Gone (nginx). A permanently-removed resource, not a never-existed one; /mcp answers the same. See mcp/agent402-dev-mcp.yml.
+      - path: /.well-known/mcp
+        status: 404
+      - path: /.well-known/x402-config
+        status: 404
+      - path: /.well-known/skills
+        status: 404
+    other_served_paths:
+      - {path: /llms.txt, status: 200, content_type: text/markdown, bytes: 2036, file: ../llms/agent402-dev-llms.txt}
+      - {path: /openapi.json, status: 200, content_type: application/json, bytes: 37756, file: ../openapi/_original/agent402-dev-openapi.json, note: 'OpenAPI 3.1.0, 12 operations'}
+      - {path: /meta.json, status: 200, content_type: application/json, bytes: 8349, note: 'provider-specific endpoint map and product catalog (schemaVersion 1.0.0, mode direct-only)'}
+      - {path: /api/product, status: 200, content_type: application/json, bytes: 3950, note: 'primary-product metadata incl. paymentClient and purchaseOptions'}
+      - {path: /health, status: 200, content_type: application/json, bytes: 514, note: 'liveness + limiter/spend-policy configuration'}
+      - {path: /metrics, status: 200, content_type: application/json, bytes: 269, note: 'settlement metrics snapshot (all zero at probe time)'}
+      - {path: /pmf/scorecard, status: 200, content_type: application/json, bytes: 278}
+      - {path: /robots.txt, status: 200, content_type: text/plain, bytes: 65, note: 'User-agent: * Allow: / + Sitemap'}
+      - {path: /sitemap.xml, status: 200, content_type: application/xml, bytes: 1041, note: '16 URLs, no lastmod'}
+      - {path: /mcp, status: 410, note: 'GET and POST tools/list both 410 Gone'}
+      - {path: /sse, status: 404}
+      - {path: /llms-full.txt, status: 404}
+      - {path: /AGENTS.md, status: 404}
+  - host: https://www.agent402.dev
+    roles: [www-alias]
+    note: 'DNS A 135.181.250.81 (same as apex); no HTTP response on 443 or 80 (curl exit without a status). http://agent402.dev/ 301s to https://agent402.dev/, but the www name is not served.'
+    documents:
+      - {path: /.well-known/security.txt, status: 0, note: no HTTP response}
+      - {path: /.well-known/openid-configuration, status: 0, note: no HTTP response}
+      - {path: /.well-known/oauth-authorization-server, status: 0, note: no HTTP response}
+      - {path: /.well-known/oauth-protected-resource, status: 0, note: no HTTP response}
+      - {path: /.well-known/api-catalog, status: 0, note: no HTTP response}
+      - {path: /.well-known/ai-plugin.json, status: 0, note: no HTTP response}
+      - {path: /.well-known/agent-card.json, status: 0, note: no HTTP response}
+      - {path: /.well-known/agent.json, status: 0, note: no HTTP response}
+      - {path: /.well-known/ucp.json, status: 0, note: no HTTP response}
+      - {path: /.well-known/acp.json, status: 0, note: no HTTP response}
+      - {path: /.well-known/aauth-resource.json, status: 0, note: no HTTP response}
+      - {path: /.well-known/apis.json, status: 0, note: no HTTP response}
+      - {path: /apis.json, status: 0, note: no HTTP response}
+      - {path: /apis.yml, status: 0, note: no HTTP response}

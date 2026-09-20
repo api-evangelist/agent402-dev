@@ -1,0 +1,32 @@
+# agent402
+Primary offer: AI Discovery Site Audit — AEO/GEO Fix Pack for 5 USDC on Base. Seven auxiliary direct x402 HTTP resources remain available.
+
+## Primary Product
+- Name: AI Discovery Site Audit — AEO/GEO Fix Pack
+- Price: 5.00 USDC on Base mainnet (eip155:8453)
+- Delivery: POST https://agent402.dev/site-release-audit
+- Exact JSON input: {"url":"https://example.com/"}
+- Free eligibility check: POST https://agent402.dev/site-release-audit/eligibility with the same JSON input
+- Product metadata: https://agent402.dev/api/product
+- Current v1.1 sample: https://agent402.dev/site-release-audit/sample.json
+- Current methodology: https://agent402.dev/site-release-audit/methodology.json
+- Method proof: https://agent402.dev/site-release-audit/proof/v1/case-study.json — seller-controlled deterministic case study; not a customer result.
+
+## Direct Discovery
+- OpenAPI 3.1 contract: https://agent402.dev/openapi.json
+- x402 v2 resource manifest: https://agent402.dev/.well-known/x402
+- Direct endpoint map: https://agent402.dev/meta.json
+
+## Standalone x402 HTTP Resources
+- POST https://agent402.dev/task-day-plan — 0.01 USDC — deterministic dependency-safe task priority and day schedule
+- POST https://agent402.dev/x402-health — 0.01 USDC — bounded GET-endpoint challenge health check
+- POST https://agent402.dev/website-preflight — 0.05 USDC — seven HEAD-only public-IPv4-pinned HTTPS checks
+- GET https://agent402.dev/url-evidence — 1.00 USDC — public-IPv4-pinned HTTP, TLS, and optional 128 KiB SHA-256 evidence; url defaults to https://example.com/
+- POST https://agent402.dev/site-release-audit — 5.00 USDC — 22 release checks plus AEO, GEO, and agent-discovery remediation
+- POST https://agent402.dev/audit-x402 — 5.99 USDC
+- GET https://agent402.dev/download — 5.99 USDC
+- GET https://agent402.dev/qr-campaign-pack — 5.99 USDC
+- Network: Base mainnet (eip155:8453). Treat the x402 manifest and each 402 PAYMENT-REQUIRED response as authoritative.
+
+## Health
+- https://agent402.dev/health

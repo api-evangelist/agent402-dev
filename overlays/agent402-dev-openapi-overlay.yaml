@@ -1,0 +1,202 @@
+overlay: 1.0.0
+info:
+  title: agent402.dev API Evangelist enhancement overlay
+  version: 1.0.0
+x-generated: '2026-09-19'
+x-method: generated
+x-source: >-
+  openapi/agent402-dev-openapi.yml, enriched from well-known/agent402-dev-x402.json, a2a/agent402-dev-agent-card.json,
+  https://agent402.dev/api/product, https://agent402.dev/meta.json and live 402 challenges observed 2026-09-20.
+x-note: >-
+  Captures the API Evangelist enhancements to the provider's published spec without mutating it. Every value
+  below was harvested from a document the provider itself publishes or from an observed live response — the
+  overlay adds nothing about this API that agent402.dev has not already stated somewhere. The substantive
+  additions are: (1) a securitySchemes entry for the x402 PAYMENT-SIGNATURE header, which the contract
+  states only in x-payment-client-guidance / x-payment-info; (2) security[] on the eight paid operations;
+  (3) a content schema and PAYMENT-REQUIRED header for the 402 response, which all eight declare with a
+  description and no body shape; (4) top-level tags[] for the three tag names the operations already use;
+  (5) externalDocs and an x-discovery block pointing at llms.txt, the x402 manifest, meta.json and the agent card.
+extends: openapi/agent402-dev-openapi.yml
+actions:
+- target: $
+  description: Add externalDocs and the discovery documents the provider publishes beside the contract.
+  update:
+    externalDocs:
+      description: agent402.dev llms.txt — the provider's machine-readable index of every resource, price and discovery document
+      url: https://agent402.dev/llms.txt
+    x-discovery:
+      x402Manifest: https://agent402.dev/.well-known/x402
+      endpointMap: https://agent402.dev/meta.json
+      agentCard: https://agent402.dev/.well-known/agent-card.json
+      primaryProduct: https://agent402.dev/api/product
+      health: https://agent402.dev/health
+      metrics: https://agent402.dev/metrics
+    tags:
+    - name: Developer tools
+      description: Bounded, deterministic observations of a public HTTPS target — audits, preflights, URL evidence and x402 endpoint checks.
+    - name: Productivity
+      description: Local deterministic task ranking and day scheduling; no network, LLM, storage or randomness.
+    - name: Downloads
+      description: Offline ZIP toolkits delivered with an X-Content-SHA256 header.
+- target: $.components
+  description: >-
+    Add the x402 security scheme. The provider states the requirement in x-payment-client-guidance
+    (protocolVersion 2, requestHeader PAYMENT-SIGNATURE) and in every 402 description; the OpenAPI declares
+    no securitySchemes at all, so the contract currently reads as an entirely open API.
+  update:
+    securitySchemes:
+      x402:
+        type: apiKey
+        in: header
+        name: PAYMENT-SIGNATURE
+        description: >-
+          x402 v2 pay-per-call (exact scheme, USDC on Base eip155:8453). No account and no API key exists. Send
+          the request without payment to receive HTTP 402 with a PAYMENT-REQUIRED header (base64 JSON
+          challenge: accepts[] with scheme, network, amount, asset 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913,
+          payTo 0xb0BbF890375B2ea1C2812887aE0331DD82eee92c, maxTimeoutSeconds 300); sign that authorization
+          and retry the IDENTICAL request once with the signed payload in PAYMENT-SIGNATURE. Settlement is
+          cancelled when the handler returns 4xx/5xx. Plain curl is a 402 probe only and never pays.
+    headers:
+      PAYMENT-REQUIRED:
+        description: base64-encoded JSON x402 v2 PaymentRequired challenge (x402Version, error, resource, accepts[], extensions.bazaar).
+        schema:
+          type: string
+          format: byte
+    schemas:
+      X402PaymentRequiredBody:
+        description: >-
+          Route-specific JSON body accompanying the 402. Observed shapes: an empty object ({}) on
+          /download and /website-preflight; a body-binding echo on /site-release-audit; a resource descriptor
+          on /url-evidence. The authoritative payment terms are in the PAYMENT-REQUIRED header, not the body.
+        type: object
+        additionalProperties: true
+        properties:
+          schemaVersion: {type: string}
+          product: {type: string}
+          checkKind: {type: string, enum: [x402-checkout-body-binding]}
+          resource: {type: string}
+          inputSha256: {type: string}
+          paymentWillNotSettle: {type: boolean}
+          paymentRequired: {type: boolean}
+          x402ClientRequired: {type: boolean}
+          authoritativePaymentTerms: {type: string}
+- target: $.paths['/task-day-plan'].post
+  description: 'Bind the x402 security scheme to taskDayPlan (x-payment-info declares x402, price $0.01).'
+  update:
+    security:
+    - x402: []
+- target: $.paths['/task-day-plan'].post.responses['402']
+  description: 'Give the 402 challenge on taskDayPlan the content schema and header the provider actually serves.'
+  update:
+    headers:
+      PAYMENT-REQUIRED:
+        $ref: '#/components/headers/PAYMENT-REQUIRED'
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/X402PaymentRequiredBody'
+- target: $.paths['/website-preflight'].post
+  description: 'Bind the x402 security scheme to websitePreflight (x-payment-info declares x402, price $0.05).'
+  update:
+    security:
+    - x402: []
+- target: $.paths['/website-preflight'].post.responses['402']
+  description: 'Give the 402 challenge on websitePreflight the content schema and header the provider actually serves.'
+  update:
+    headers:
+      PAYMENT-REQUIRED:
+        $ref: '#/components/headers/PAYMENT-REQUIRED'
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/X402PaymentRequiredBody'
+- target: $.paths['/url-evidence'].get
+  description: 'Bind the x402 security scheme to verifiedUrlEvidence (x-payment-info declares x402, price $1.00).'
+  update:
+    security:
+    - x402: []
+- target: $.paths['/url-evidence'].get.responses['402']
+  description: 'Give the 402 challenge on verifiedUrlEvidence the content schema and header the provider actually serves.'
+  update:
+    headers:
+      PAYMENT-REQUIRED:
+        $ref: '#/components/headers/PAYMENT-REQUIRED'
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/X402PaymentRequiredBody'
+- target: $.paths['/site-release-audit'].post
+  description: 'Bind the x402 security scheme to siteReleaseAudit (x-payment-info declares x402, price $5.00).'
+  update:
+    security:
+    - x402: []
+- target: $.paths['/site-release-audit'].post.responses['402']
+  description: 'Give the 402 challenge on siteReleaseAudit the content schema and header the provider actually serves.'
+  update:
+    headers:
+      PAYMENT-REQUIRED:
+        $ref: '#/components/headers/PAYMENT-REQUIRED'
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/X402PaymentRequiredBody'
+- target: $.paths['/audit-x402'].post
+  description: 'Bind the x402 security scheme to auditX402 (x-payment-info declares x402, price $5.99).'
+  update:
+    security:
+    - x402: []
+- target: $.paths['/audit-x402'].post.responses['402']
+  description: 'Give the 402 challenge on auditX402 the content schema and header the provider actually serves.'
+  update:
+    headers:
+      PAYMENT-REQUIRED:
+        $ref: '#/components/headers/PAYMENT-REQUIRED'
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/X402PaymentRequiredBody'
+- target: $.paths['/x402-health'].post
+  description: 'Bind the x402 security scheme to x402Health (x-payment-info declares x402, price $0.01).'
+  update:
+    security:
+    - x402: []
+- target: $.paths['/x402-health'].post.responses['402']
+  description: 'Give the 402 challenge on x402Health the content schema and header the provider actually serves.'
+  update:
+    headers:
+      PAYMENT-REQUIRED:
+        $ref: '#/components/headers/PAYMENT-REQUIRED'
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/X402PaymentRequiredBody'
+- target: $.paths['/download'].get
+  description: 'Bind the x402 security scheme to downloadWayfarersDeck (x-payment-info declares x402, price $5.99).'
+  update:
+    security:
+    - x402: []
+- target: $.paths['/download'].get.responses['402']
+  description: 'Give the 402 challenge on downloadWayfarersDeck the content schema and header the provider actually serves.'
+  update:
+    headers:
+      PAYMENT-REQUIRED:
+        $ref: '#/components/headers/PAYMENT-REQUIRED'
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/X402PaymentRequiredBody'
+- target: $.paths['/qr-campaign-pack'].get
+  description: 'Bind the x402 security scheme to downloadQrCampaignPack (x-payment-info declares x402, price $5.99).'
+  update:
+    security:
+    - x402: []
+- target: $.paths['/qr-campaign-pack'].get.responses['402']
+  description: 'Give the 402 challenge on downloadQrCampaignPack the content schema and header the provider actually serves.'
+  update:
+    headers:
+      PAYMENT-REQUIRED:
+        $ref: '#/components/headers/PAYMENT-REQUIRED'
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/X402PaymentRequiredBody'

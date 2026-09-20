@@ -1,18 +1,105 @@
 aid: agent402-dev
 name: agent402.dev
-description: 'agent402.dev is a company surfaced via the API Evangelist harvest backlog (source: a2a-registry)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  agent402.dev is a pay-per-call agent-commerce service that sells website release evidence and offline tools to
+  AI agents over the x402 v2 protocol, settled in USDC on Base (eip155:8453) with no accounts, sign-up or API keys
+  — payment is the authorization. Its primary product is a 5.00 USDC AI Discovery Site Audit: 22 deterministic technical
+  SEO / AEO / GEO checks on one public HTTPS page plus five evidence-derived remediation slots for JSON-LD, metadata,
+  robots.txt, llms.txt and sitemap.xml, with a free exact-body eligibility check, a live sample report and a machine-readable
+  methodology published beside it. Seven auxiliary direct HTTP resources are priced from 0.01 to 5.99 USDC: a Verified
+  URL Evidence Snapshot, a HEAD-only website preflight, an x402 endpoint health check and launch-readiness audit,
+  a deterministic task-priority day scheduler, and two downloadable ZIP packs. The whole surface is published machine-first
+  — an OpenAPI 3.1 contract at /openapi.json, an x402 v2 manifest at /.well-known/x402, a conformant A2A agent card,
+  llms.txt and a JSON endpoint map at /meta.json — while the operator is not named anywhere on the site. An earlier
+  MCP surface has been deliberately retired (410 Gone).
+image: https://agent402.dev/favicon.ico
 url: https://raw.githubusercontent.com/api-evangelist/agent402-dev/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:a2a-registry
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: >-
+  Full local enrichment pass 2026-09-19 (was: stub / harvest:a2a-registry). Live x402 seller with OpenAPI, agent
+  card, llms.txt and manifest all served from agent402.dev.
+x-operator: >-
+  Not published — no company name, legal entity, contact, terms or privacy page anywhere on agent402.dev; the agent
+  card names the provider organization only as "agent402.dev" and the Payan marketplace offer page that might name
+  the seller returns 404.
 specificationVersion: '0.20'
 created: '2026-09-19'
 modified: '2026-09-19'
 tags:
 - Company
-apis: []
+- x402
+- Agentic Payments
+- Agentic Commerce
+- AI Agents
+- A2A
+- Technical SEO
+- Website Audits
+- URL Evidence
+- Developer Tools
+- Base
+apis:
+- aid: agent402-dev:agent402-direct-x402-http-resources
+  name: Agent402 Direct x402 HTTP Resources
+  description: >-
+    Eight x402-priced and four free direct HTTP resources on agent402.dev, described by one OpenAPI 3.1 contract
+    (info.version 1.7.0, 12 operations, 14 schemas): the 5.00 USDC AI Discovery Site Audit with its free eligibility
+    check, sample, methodology and frozen case study; the 1.00 USDC Verified URL Evidence Snapshot; a 0.05 USDC
+    website preflight; a 0.01 USDC x402 endpoint health check and a 5.99 USDC x402 launch audit; a 0.01 USDC deterministic
+    task-day planner; and two 5.99 USDC ZIP downloads. Every paid route answers an unpaid request with HTTP 402
+    and a PAYMENT-REQUIRED challenge (exact scheme, USDC on eip155:8453, 300-second window) and is paid by retrying
+    the identical request with PAYMENT-SIGNATURE; every report carries a stable id and a SHA-256 digest of itself.
+  image: https://agent402.dev/favicon.ico
+  humanURL: https://agent402.dev/
+  baseURL: https://agent402.dev
+  tags:
+  - x402
+  - Website Audits
+  - Technical SEO
+  - URL Evidence
+  - x402 Endpoint Audit
+  - Task Scheduling
+  - Downloads
+  properties:
+  - type: OpenAPI
+    url: openapi/agent402-dev-openapi.yml
+  - type: OpenAPI
+    name: OpenAPI 3.1.0 as served by the provider (verbatim copy in openapi/_original/)
+    url: https://agent402.dev/openapi.json
+  - type: Documentation
+    name: Human and Agent docs — overview, direct call flow, 402 retry flow, endpoint reference and resource catalog
+      (all sections of the homepage)
+    url: https://agent402.dev/
+  - type: Documentation
+    name: AI Discovery Site Audit — product page, buyer setup, free eligibility check, proof and 402 inspection
+      tools
+    url: https://agent402.dev/site-release-audit
+  - type: Documentation
+    name: Deterministic Task Priority & Day Scheduler — resource page (GET serves the human page; POST is the paid
+      call)
+    url: https://agent402.dev/task-day-plan
+  - type: Documentation
+    name: x402 Launch Readiness Audit — resource page
+    url: https://agent402.dev/x402-audit
+  - type: APIReference
+    name: Endpoint Reference and Resource Catalog tables (homepage)
+    url: https://agent402.dev/
+  - type: GettingStarted
+    name: 'Agent Quickstart and Direct HTTP Flow (homepage): /openapi.json -> /.well-known/x402 -> resource URL
+      -> pay on 402'
+    url: https://agent402.dev/
+  - type: Examples
+    url: examples/agent402-dev-examples.yml
+  - type: Overlay
+    url: overlays/agent402-dev-openapi-overlay.yaml
+  - type: X-X402Discovery
+    name: x402 v2 resource manifest — prices, network, asset, payee (the provider says to treat it as authoritative;
+      verbatim copy in well-known/agent402-dev-x402.json)
+    url: https://agent402.dev/.well-known/x402
+  - type: Metrics
+    name: Public settlement metrics snapshot (JSON)
+    url: https://agent402.dev/metrics
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -21,3 +108,56 @@ maintainers:
 common:
 - type: Website
   url: https://agent402.dev/
+- type: Pricing
+  name: Resource Catalog — per-call USDC price of every resource (homepage table); the machine-readable price list
+    is the x402 manifest
+  url: https://agent402.dev/
+- type: LLMsTxt
+  url: llms/agent402-dev-llms.txt
+- type: LLMsTxt
+  name: llms.txt as served by the provider
+  url: https://agent402.dev/llms.txt
+- type: AgentCard
+  url: a2a/agent402-dev-a2a.yml
+- type: WellKnown
+  url: well-known/agent402-dev-well-known.yml
+- type: X-MCPServerCandidate
+  name: >-
+    No MCP server — /mcp and /.well-known/mcp.json answer 410 Gone (a retired surface); this manifest records that
+    evidence and an API-Evangelist-derived candidate tool list. NOT a live MCPServer.
+  url: mcp/agent402-dev-mcp.yml
+- type: Packages
+  name: No first-party SDK; the provider pins four third-party npm buyer packages. The agent402-* npm namespace
+    belongs to agent402.tools, a different company.
+  url: packages/agent402-dev-packages.yml
+- type: Authentication
+  url: authentication/agent402-dev-authentication.yml
+- type: Conventions
+  url: conventions/agent402-dev-conventions.yml
+- type: ErrorCatalog
+  url: errors/agent402-dev-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/agent402-dev-lifecycle.yml
+- type: Conformance
+  url: conformance/agent402-dev-conformance.yml
+- type: DataModel
+  url: data-model/agent402-dev-data-model.yml
+- type: Sandbox
+  url: sandbox/agent402-dev-sandbox.yml
+- type: Plans
+  url: plans/agent402-dev-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/agent402-dev-rate-limits.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: RegulatoryPosture
+  url: regulatory/agent402-dev-regulatory-posture.yml
+- type: DomainSecurity
+  url: security/agent402-dev-domain-security.yml
+- type: AgenticAccess
+  url: agentic-access/agent402-dev-agentic-access.yml
+x-enrichment:
+  date: '2026-09-19'
+  status: enriched
+  artifacts_added: 28
+  pass: local-v3

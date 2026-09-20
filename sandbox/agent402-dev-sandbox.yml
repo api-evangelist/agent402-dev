@@ -1,0 +1,74 @@
+generated: '2026-09-19'
+method: searched
+source: >-
+  openapi/agent402-dev-openapi.yml (the four free operations and info.x-guidance), https://agent402.dev/site-release-audit
+  ("Step 2 — Check delivery eligibility just before buying", "Optional nonpaying HTTP 402 inspection tools"),
+  /api/product (eligibility, purchaseSafety), /meta.json, and live calls on 2026-09-20 UTC.
+checked: '2026-09-19'
+sandbox_present: true
+shape: free-rehearsal-surfaces (no test network, no test keys, no test mode)
+test_network: false
+test_credentials: false
+test_mode_toggle: false
+note: >-
+  There is no testnet deployment, no test-mode key prefix and no fixture wallet, because there is no key
+  and no account to have a test version of; every paid call settles real USDC on Base mainnet and the
+  provider labels each purchase "irreversible". What exists instead is an unusually complete set of FREE
+  rehearsal surfaces that let an agent see exactly what a call costs, what it returns, how it is scored,
+  and whether its specific input will be deliverable — before spending anything. Nothing below is invented;
+  every value is the provider's, and the eligibility response was observed live.
+surfaces:
+- name: Pre-payment eligibility check (free, exact-body bound)
+  operation: siteReleaseAuditEligibility
+  url: https://agent402.dev/site-release-audit/eligibility
+  method: POST
+  free: true
+  verified: '2026-09-20'
+  detail: >-
+    Same JSON body as the paid audit ({"url": "https://example.com/"}). Reuses the paid path's DNS, TLS,
+    IP-pinning, redirect, body-cap and deadline checks on the main document only, makes zero root-file
+    requests, returns no score or findings. The response binds the exact body by SHA-256 (inputSha256,
+    "SHA-256 of JSON.stringify({url})"), is valid for five minutes (validUntil), and carries a
+    purchaseBinding (offerId, priceCents 500, amountAtomic 5000000, directRoute, payanRoute). 422 with
+    reason invalid_input / invalid_target when the body is not payable.
+  evidence: {status: 200, eligibility: eligible, reason: main_document_deliverable, validity: '5 minutes'}
+- name: 402 challenge as a free price quote
+  url: https://agent402.dev/url-evidence?url=https://example.com/
+  free: true
+  verified: '2026-09-20'
+  detail: >-
+    An unpaid request to any paid route returns the full x402 challenge — exact atomic amount, asset, payTo,
+    maxTimeoutSeconds — and, on /url-evidence, an extensions.bazaar block with the input schema and a
+    complete worked output example. The provider names this explicitly: "Plain curl is only a 402 probe: it
+    inspects the challenge, is not checkout, and does not pay." The product page offers copyable "Direct 402
+    probe" and "Payan 402 probe" curl snippets as inspection tools.
+  evidence: {status: 402, header: PAYMENT-REQUIRED}
+- name: Full production-format sample report
+  operation: siteReleaseAuditSample
+  url: https://agent402.dev/site-release-audit/sample.json
+  free: true
+  verified: '2026-09-20'
+  detail: 'A live, continuously regenerated Website Release Evidence Dossier for example.com (schemaVersion 1.1.0, 22 checks, aiDiscovery findings, dossierId, reportSha256) — the exact shape a paid call returns. Saved verbatim to examples/.'
+- name: Machine-readable methodology
+  operation: siteReleaseAuditMethodology
+  url: https://agent402.dev/site-release-audit/methodology.json
+  free: true
+  verified: '2026-09-20'
+  detail: 'Check weights (22 checks, 100 points, grades A>=90 ... F), observation limits (GET, maxRedirects 3, maxBodyBytes 524288, 12000 ms deadline, no JavaScript, no subresources), root-evidence rules and fail-closed predicates.'
+- name: Frozen v1 before/after case study
+  operation: siteReleaseAuditCaseStudy
+  url: https://agent402.dev/site-release-audit/proof/v1/case-study.json
+  free: true
+  verified: '2026-09-20'
+  detail: 'Immutable seller-controlled deterministic replay (69/D -> 95/A, +26) with both full reports, all deltas and a root-replacement patch; companion before.html / after.html pages. The provider is explicit that it is "not a paid customer result or an independent attestation".'
+- name: Operator telemetry
+  urls: [https://agent402.dev/health, https://agent402.dev/metrics, https://agent402.dev/pmf/scorecard]
+  free: true
+  verified: '2026-09-20'
+  detail: 'Liveness, limiter configuration, settlement totals and the weekly PMF scorecard, all anonymous JSON.'
+spend_safety_guidance_verbatim:
+  - 'use a dedicated limited-funds Base wallet with at least 5 USDC'
+  - 'keep the eligibility-checked body unchanged, and never auto-run or auto-retry it'
+  - 'Payan does not prevalidate the request body before its payment challenge. Run the free eligibility check, keep the exact body unchanged, and use one reviewed, non-retrying buyer run.'
+  - 'Payment warning: the browser payment button or guarded Node recipe performs one irreversible 5 USDC purchase.'
+limitations_verbatim: 'No ranking, citation, traffic, conversion, revenue, WCAG, penetration-test, compliance, or legal guarantee.'

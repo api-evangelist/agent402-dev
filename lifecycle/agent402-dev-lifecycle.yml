@@ -1,0 +1,58 @@
+generated: '2026-09-19'
+method: searched
+source: >-
+  openapi/agent402-dev-openapi.yml (info.version, per-resource version query constants), /meta.json and
+  /api/product (product version, schemaVersion), /site-release-audit/methodology.json and sample.json
+  (report contract 1.1.0), /site-release-audit/proof/v1/case-study.json (frozen v1, reportSchemaVersion
+  1.0.0), /health, /metrics, /pmf/scorecard, /sitemap.xml, the TLS certificate, and live probes of /status,
+  /changelog, /blog, /mcp and /.well-known/mcp.json on 2026-09-19/20.
+checked: '2026-09-19'
+summary: >-
+  A live, actively iterated single-host service with versioning expressed inside its documents rather than
+  in URLs, and no published lifecycle policy of any kind. The OpenAPI is at info.version 1.7.0 while the
+  primary product it describes is at 1.6.0 and its report contract at schemaVersion 1.1.0, with a frozen v1
+  (1.0.0) case study kept online explicitly "immutable" as base proof — the provider versions the OUTPUT
+  contract and the PROOF separately from the API document. The two ZIP downloads pin a version query
+  parameter (const "1.0" / "1.0.0"). There is no changelog, no versioning policy, no deprecation policy, no
+  Sunset/Deprecation header, no status page and no SLA; the only retirement the site has performed — its
+  MCP surface — is signalled by HTTP 410 Gone alone. Operational telemetry is public: /health (status ok,
+  x402Enabled true, queueEnabled true, limiter and spend-policy configuration), /metrics (settlement
+  totals) and /pmf/scorecard (a weekly paid-usage scorecard against a stated target of 3 repeat paying
+  agents per week — all zero at probe time).
+versioning:
+  scheme: in-document semver (no URI or header versioning)
+  current:
+    openapi_info_version: '1.7.0'
+    primary_product_version: '1.6.0'   # /api/product and /meta.json primaryProduct.version
+    report_contract_schema_version: '1.1.0'   # sample.json, methodology.json, product.reportContract
+    eligibility_schema_version: '1.0.0'
+    frozen_proof_report_schema_version: '1.0.0'   # /site-release-audit/proof/v1/case-study.json
+    x402_version: 2
+    downloads: {downloadWayfarersDeck: 'version query const "1.0"', downloadQrCampaignPack: 'version query const "1.0.0"'}
+  docs: null
+  note: >-
+    Every response body carries schemaVersion or version, and every report carries a reportSha256, so a
+    consumer can detect a contract change per response. The frozen v1 proof is deliberately NOT upgraded:
+    methodology.proofBoundary says it "predates and does not prove v1.1 root-file observations".
+deprecation:
+  policy_url: null
+  sunset_header: false
+  deprecation_header: false
+  deprecated_operations: []
+  retired_surfaces:
+    - {surface: 'MCP server (/mcp, /.well-known/mcp.json)', signal: 'HTTP 410 Gone', notice_published: false, note: 'see mcp/agent402-dev-mcp.yml; the homepage frames the change as a design choice — "Seven direct resources instead of a session-oriented gateway"'}
+status_page: null
+status_page_note: '/status 404. /health, /metrics and /pmf/scorecard are live JSON telemetry, not a status page — no incident history, no component list, no subscribe. No StatusPage pointer is emitted.'
+sla: null
+changelog: null
+changelog_note: '/changelog and /blog 404; no dated release notes anywhere. Version drift between the OpenAPI (1.7.0) and the product (1.6.0) is the only visible sign of iteration.'
+operational_telemetry:
+  health: {url: https://agent402.dev/health, status: 'ok', x402Enabled: true, queueEnabled: true, tools: 0, observability_provider: better-stack}
+  metrics: {url: https://agent402.dev/metrics, scope: 'today_utc totals + all_time settlements', observed: 'paidCalls 0, grossRevenueUsd 0, settlements.groups []'}
+  pmf_scorecard: {url: https://agent402.dev/pmf/scorecard, windowDays: 7, target: 'repeatPayingAgentsPerWeek 3', observed: 'settledPaidCalls7d 0, uniquePayingAgents7d 0'}
+timeline:
+  - {date: '2026-07-13', event: 'the frozen v1 case study (/site-release-audit/proof/v1/case-study.json) is dated generatedAt 2026-07-13T16:20:00Z — the earliest provider-authored date on the surface; it is kept immutable as base proof'}
+  - {date: '2026-07-14', event: 'the worked UrlEvidenceReport example inside the /url-evidence 402 challenge is dated observedAt 2026-07-14T12:00:00Z'}
+  - {date: '2026-08-16', event: 'approximate TLS certificate issue (expires Nov 14 2026, a 90-day certificate; see security/)'}
+  - {date: '2026-09-15', event: 'the freshest date inside the live sample (example.com last-modified header captured by the audit)'}
+  - {date: '2026-09-20', event: 'this pass: sample.json observedAt 2026-09-20T02:31Z (the sample is regenerated continuously), all surfaces live, MCP paths 410'}

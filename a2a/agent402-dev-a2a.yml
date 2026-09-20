@@ -1,0 +1,99 @@
+generated: '2026-09-19'
+method: probed
+source: https://agent402.dev/.well-known/agent-card.json
+checked: '2026-09-19'
+discovery:
+  path: /.well-known/agent-card.json
+  canonical: true
+  host: agent402.dev
+  note: >-
+    Served from the provider's only host, agent402.dev (nginx/1.24.0, HTTP 200, application/json;
+    charset=utf-8, 2,576 bytes). The legacy /.well-known/agent.json path serves the IDENTICAL bytes
+    (same sha256). www.agent402.dev resolves to the same A record (135.181.250.81) but never answers an
+    HTTP request, so it could not be probed. A negative-control path under /.well-known/ returns a
+    text/plain 404, so the card is a real document and not a catch-all response.
+conformance:
+  spec: A2A 1.0.0
+  grade: conformant
+  grade_basis: >-
+    All three hard checks pass: capabilities is an OBJECT ({streaming: false, pushNotifications: false,
+    stateTransitionHistory: false}), protocolVersion is present ("0.3.0"), and skills is an ARRAY of two
+    entries each carrying id, name, description, tags, examples, inputModes and outputModes. The optional
+    fields that separate conformant from near-conformant are all present: preferredTransport ("JSONRPC"),
+    defaultInputModes and defaultOutputModes ([text/plain, application/json]). The card also carries
+    additionalInterfaces, a provider block, documentationUrl, version and
+    supportsAuthenticatedExtendedCard: false. The endpoint the card names answers JSON-RPC 2.0 (see
+    endpoint_liveness), so unlike many conformant cards this one points at a live surface.
+  protocol_version: 0.3.0
+  preferred_transport: JSONRPC
+  deviations:
+    - id: no-securitySchemes
+      severity: soft
+      detail: >-
+        No securitySchemes / security. Consistent with the card's own description — the agent returns a
+        free static discovery artifact and "does not ... connect a wallet, request a signature, send a
+        payment" — so the omission describes an anonymous surface rather than hiding a key requirement.
+    - id: documentationUrl-redirects
+      severity: soft
+      detail: >-
+        documentationUrl and provider.url are both https://agent402.dev/a2a/site-audit, which answers
+        HTTP 303 See Other to /site-release-audit#a2a (the product page). The page exists; the pointer
+        is one hop and a fragment away from it.
+    - id: discovery-only-agent
+      severity: informational
+      detail: >-
+        The card is explicit that both skills return ONE static catalog artifact and that the agent does
+        not inspect a URL, execute either paid product, or start a conversation. It is an A2A front door
+        to the x402 HTTP resources (POST /site-release-audit, GET /url-evidence), not an agent that
+        performs the work over A2A. capabilities are all false, matching that scope.
+    - id: skills-carry-io-modes
+      severity: positive
+      detail: 'Both skills declare their own inputModes/outputModes, tags (product-discovery, AEO, GEO, technical-SEO, x402, URL-evidence, HTTP, TLS, SHA-256) and one example each.'
+    - id: unsigned
+      severity: informational
+      detail: No signatures[] block; the card is served over TLS only.
+card:
+  name: Agent402 Site Audit Discovery
+  description: >-
+    Free, static product discovery for two existing x402 products on eip155:8453: the 5.00 USDC AI Discovery Site Audit and the 1.00 USDC Verified URL Evidence Snapshot. Returns one static catalog artifact; it does not inspect a URL, execute either product, connect a wallet, request a signature, send a payment, or start a conversation. Free site-audit eligibility: POST https://agent402.dev/site-release-audit/eligibility. Exact paid resources: POST https://agent402.dev/site-release-audit and GET https://agent402.dev/url-evidence.
+  url: https://agent402.dev/a2a/site-audit-discovery
+  version: 1.0.0
+  protocol_version: 0.3.0
+  preferred_transport: JSONRPC
+  additional_interfaces: [{"url": "https://agent402.dev/a2a/site-audit-discovery", "transport": "JSONRPC"}]
+  documentation_url: https://agent402.dev/a2a/site-audit
+  provider: {organization: agent402.dev, url: 'https://agent402.dev/a2a/site-audit'}
+  default_input_modes: ["text/plain", "application/json"]
+  default_output_modes: ["text/plain", "application/json"]
+  capabilities: {streaming: false, push_notifications: false, state_transition_history: false}
+  supports_authenticated_extended_card: false
+  security_schemes: none-declared
+  signatures: 0
+  skills: 2
+  file: agent402-dev-agent-card.json
+  sha256: 2b16e136015f2aed875a22f376247ae469ccb41b1c016b311b9142dcb9d08b29
+skills:
+  - {id: site-audit-product-discovery, name: 'AI Discovery Site Audit product discovery', tags: ["product-discovery", "AEO", "GEO", "technical-SEO", "x402"], examples: 1, input_modes: ["text/plain", "application/json"], output_modes: ["text/plain", "application/json"]}
+  - {id: verified-url-evidence-product-discovery, name: 'Verified URL Evidence product discovery', tags: ["product-discovery", "URL-evidence", "HTTP", "TLS", "SHA-256", "x402"], examples: 1, input_modes: ["text/plain", "application/json"], output_modes: ["text/plain", "application/json"]}
+endpoint_liveness:
+  url: https://agent402.dev/a2a/site-audit-discovery
+  probed: '2026-09-20T02:49Z'
+  post_message_send: >-
+    POST {"jsonrpc":"2.0","id":1,"method":"message/send","params":{"message":{"role":"user","parts":[{"kind":"text",
+    "text":"Return the static product-discovery artifact for the AI Discovery Site Audit."}],"messageId":"ae-probe-1"}}}
+    -> HTTP 200, application/json, {"jsonrpc":"2.0","id":1,"error":{"code":-32602,"message":"Invalid method
+    parameters"}}. A live JSON-RPC 2.0 responder that validated and rejected our minimal params; the exact
+    accepted parameter shape was not pursued further (no artifact was retrieved, none is claimed).
+  post_tools_list: 'MCP-style tools/list -> HTTP 200 JSON-RPC error (this is an A2A endpoint, not an MCP one)'
+  get: 'HTTP 404, application/json'
+  service_status: live
+registry_listings:
+  - {registry: a2a-registry, note: 'the source of this harvest (x-source: harvest:a2a-registry)'}
+x-evidence:
+  fetched: '2026-09-19'
+  url: https://agent402.dev/.well-known/agent-card.json
+  http_status: 200
+  content_type: application/json; charset=utf-8
+  bytes: 2576
+  server: nginx/1.24.0 (Ubuntu)
+  legacy_path: {url: 'https://agent402.dev/.well-known/agent.json', http_status: 200, identical_bytes: true}

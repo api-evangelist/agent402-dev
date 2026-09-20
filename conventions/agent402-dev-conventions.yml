@@ -1,0 +1,122 @@
+generated: '2026-09-19'
+method: searched
+source: >-
+  openapi/agent402-dev-openapi.yml, https://agent402.dev/ (Human Docs + Agent Docs sections), /site-release-audit,
+  /api/product, /meta.json, /health, well-known/agent402-dev-x402.json, and live responses observed 2026-09-20 UTC
+  (response headers on 200, 402 and 422; CORS preflight headers; 15 rapid /health calls).
+docs: https://agent402.dev/
+checked: '2026-09-19'
+description: >-
+  How the agent402.dev direct x402 HTTP resources behave across every operation: payment-as-authorization,
+  the absence of idempotency and reversibility (and what the provider offers instead), a strong dry-run
+  story, no pagination, per-response integrity and tracing headers, in-document versioning, a non-RFC 9457
+  error surface and a thin rate-limit signal. Cross-links: authentication/, errors/, lifecycle/,
+  rate-limits/, sandbox/, plans/.
+base_url: https://agent402.dev
+api_style: 'direct HTTP resources — 8 paid (x402 v2, USDC on Base) + 4 free; JSON in, JSON out except two ZIP downloads; no sessions, no gateway'
+auth_style:
+  model: payment-as-authorization (x402 v2 exact scheme)
+  request_header: PAYMENT-SIGNATURE
+  challenge: 'HTTP 402 + PAYMENT-REQUIRED (base64 JSON)'
+  settlement_receipt_header: PAYMENT-RESPONSE
+  see: authentication/agent402-dev-authentication.yml
+idempotency:
+  supported: false
+  coverage: none
+  header: null
+  scope: []
+  retention: null
+  detail: >-
+    No Idempotency-Key header, no request-id de-duplication and no documented replay window on any of the
+    eight paid routes or the free eligibility route. Retrying a paid call that may already have succeeded
+    is a second purchase. The provider is explicit about the consequence and pushes the burden to the
+    client on every surface: "make exactly one signed attempt", "no automatic retry", "Do not retry after
+    an ambiguous result."
+  what_exists_instead:
+    - mechanism: exact-body binding
+      surface: POST /site-release-audit/eligibility -> inputSha256; POST /site-release-audit 402 body echoes inputSha256 with paymentWillNotSettle
+      effect: 'Binds the body the buyer checked to the body the buyer pays for. A correctness aid against paying for the wrong input; not a de-duplication key against paying twice for the right one.'
+    - mechanism: x402 exact-scheme authorization
+      surface: PAYMENT-SIGNATURE
+      effect: 'The signed USDC authorization is single-use at the token contract (EIP-712 domain "USD Coin" v2 in accepts[].extra), so one signed payload cannot be settled twice. It does not stop a client signing a second authorization for a repeat of the same logical request.'
+    - mechanism: settlement cancellation on failure
+      surface: direct route, all paid operations
+      effect: '"Direct x402 cancels settlement on a 4xx/5xx report response" and "Delivery runs after payment verification but before settlement, so invalid or unavailable targets fail without charging" — a failed call is not charged, which removes the most common reason to retry blindly.'
+  recommendation: 'An Idempotency-Key honoured for maxTimeoutSeconds (already 300 s on every accepts[] entry) would map cleanly onto the existing flow and is the highest-value agent-readiness addition available here.'
+reversibility:
+  grade: none
+  coverage: none
+  detail: >-
+    No refund, void, cancel or reversal operation exists for any paid call, and the provider says so in
+    plain words: the purchase is "one irreversible 5 USDC purchase". What IS documented is the failure-path
+    protection above (settlement cancelled on 4xx/5xx on the direct route) and the explicit warning that
+    the Payan route lacks it ("Payan can settle wrong input"). No window is stated because there is no
+    reversal to have a window; nothing is recorded that the docs do not say.
+  surfaces:
+    - surface: paid observations and reports
+      operations: ["taskDayPlan", "websitePreflight", "verifiedUrlEvidence", "siteReleaseAudit", "auditX402", "x402Health"]
+      reversal: none
+      window: null
+      irreversible_by_design: true
+      compensating_control: 'settlement cancelled when the handler returns 4xx/5xx (direct route only); free eligibility check before paying (siteReleaseAudit)'
+      docs: https://agent402.dev/api/product
+    - surface: paid downloads
+      operations: ["downloadWayfarersDeck", "downloadQrCampaignPack"]
+      reversal: none
+      window: null
+      irreversible_by_design: true
+      note: 'A ZIP is delivered with an X-Content-SHA256 header; nothing to reverse but the charge, and no path to reverse that.'
+    - surface: free routes
+      operations: ["siteReleaseAuditEligibility", "siteReleaseAuditSample", "siteReleaseAuditMethodology", "siteReleaseAuditCaseStudy"]
+      reversal: na
+      note: 'Read-only, no charge, no durable state.'
+    - surface: payment itself
+      reversal: none
+      window: null
+      note: 'On-chain USDC transfer to payTo 0xb0BbF890375B2ea1C2812887aE0331DD82eee92c. No refund endpoint, no chargeback, no dispute mechanism, no contact address.'
+dry_run_mode:
+  supported: partial
+  detail: >-
+    No dry-run parameter, but three free rehearsal surfaces cover most of what a dry run is for: the
+    eligibility route validates the exact paid body against the real delivery path (five-minute validity);
+    the 402 challenge is a free, exact price quote with an input schema and worked output example; and
+    sample.json / methodology.json / case-study.json show the full output contract and scoring. See sandbox/.
+pagination:
+  style: none
+  detail: 'No operation returns a collection that pages. taskDayPlan is bounded by input (up to 50 tasks, at most 24 blocks).'
+filtering_and_expansion:
+  supported: false
+metadata:
+  supported: false
+request_tracing:
+  request_id_header: null
+  response_identifiers:
+    - {header: X-Evidence-ID, operation: verifiedUrlEvidence, body_field: evidenceId}
+    - {header: X-Report-SHA256, operation: verifiedUrlEvidence, body_field: reportSha256}
+    - {header: X-Dossier-ID, operation: siteReleaseAudit, body_field: dossierId, note: 'named in Access-Control-Expose-Headers; not declared on the operation in the spec'}
+    - {header: X-Content-SHA256, operations: [downloadWayfarersDeck, downloadQrCampaignPack]}
+  body_identifiers: [evidenceId, dossierId, plan_id, healthId, auditId, caseStudyId, inputSha256, reportSha256, report_sha256]
+  detail: 'Every report carries a stable id and a SHA-256 of itself; the id is the correlation handle. There is no inbound request-id header and no PAYMENT-RESPONSE was observable without paying.'
+versioning:
+  style: in-document (schemaVersion / version fields); no URI or header versioning
+  current: {openapi: '1.7.0', product: '1.6.0', report_contract: '1.1.0'}
+  see: lifecycle/agent402-dev-lifecycle.yml
+error_envelope:
+  shape: 'status-code driven; no problem+json; SiteAuditEligibility object (eligibility, reason) on the free route; empty or descriptor bodies on 402; text/plain on 404'
+  rfc9457: false
+  see: errors/agent402-dev-problem-types.yml
+rate_limit_signaling:
+  status_on_exhaustion: 429 (declared on siteReleaseAuditEligibility only)
+  headers: [Retry-After]
+  numbers_published: 'only via /health: window 60 s, 12 requests per tool per agent, 6 per tool per wallet'
+  see: rate-limits/agent402-dev-rate-limits.yml
+response_headers_observed:
+  security: [X-Content-Type-Options nosniff, X-Frame-Options DENY, Referrer-Policy no-referrer, Permissions-Policy, Content-Security-Policy default-src self]
+  cors: 'Access-Control-Allow-Origin *; Allow-Methods GET, POST, OPTIONS; Allow-Headers Content-Type, PAYMENT-SIGNATURE; Expose-Headers PAYMENT-REQUIRED, PAYMENT-RESPONSE, X-Evidence-ID, X-Report-SHA256, X-Dossier-ID; Max-Age 600'
+  caching: 'Cache-Control: private, no-store on API responses; weak ETags'
+  robots: 'X-Robots-Tag: noindex, nofollow on paid and eligibility responses'
+  hsts: absent (see security/agent402-dev-domain-security.yml)
+input_bounds_published:
+  - {operation: verifiedUrlEvidence, bound: 'encoded request-target <= 2300 bytes; <= 2302 bytes as a JSON string (x-request-target-max-bytes / x-request-target-max-json-bytes); url maxLength 2048; fingerprint hashes at most 128 KiB'}
+  - {operation: siteReleaseAudit, bound: 'url https:// only, maxLength 2048, port 443, at least one public IPv4 DNS answer; observation 512 KiB, 3 redirects, 12 s total; root files 64/128/256 KiB'}
+  - {operation: taskDayPlan, bound: 'up to 50 tasks, at most 24 blocks'}

@@ -1,0 +1,122 @@
+generated: '2026-09-19'
+method: derived
+source: >-
+  openapi/agent402-dev-openapi.yml (every 4xx/5xx response declared on the 12 operations), enriched from
+  live unauthenticated responses observed 2026-09-20 UTC: 402 on GET /url-evidence, POST /site-release-audit
+  (valid AND invalid bodies), GET /download and POST /website-preflight; 200 and 422 on
+  POST /site-release-audit/eligibility (valid URL, non-URL string, http:// URL, malformed JSON); 404 on
+  /docs and a nonsense /.well-known/ path; and the x-guidance / purchaseSafety prose in the spec and /api/product.
+checked: '2026-09-19'
+format: non-rfc9457
+media_type: application/json
+rfc9457: false
+envelope:
+  payment_required: 'HTTP 402 + PAYMENT-REQUIRED response header (base64 JSON x402 v2 challenge); body varies by route — see the 402 entry'
+  eligibility_failure: 'the SiteAuditEligibility object itself, with eligibility: ineligible and a reason enum (invalid_input | invalid_target | ...)'
+  not_found: 'text/plain "404 Not Found" (nginx default)'
+  gone: 'text/html nginx 410 page on the retired MCP paths'
+  note: >-
+    There is no problem+json, no error-code registry, no type URIs and no remediation strings in any error
+    body. The two shapes an agent can branch on are the HTTP status and, on the free eligibility route, the
+    reason enum. The 402 is not a failure at all — it is the normal first half of every paid call.
+ordering:
+  payment_before_validation: true
+  evidence: >-
+    POST /website-preflight with body {"url":"notaurl"} -> 402 with body {} (no 400). On the DIRECT x402
+    route the challenge is issued before the request body is validated; the spec's x-guidance states the
+    protection: "Direct x402 cancels settlement on a 4xx/5xx report response" and the /url-evidence description
+    says "Delivery runs after payment verification but before settlement, so invalid or unavailable targets
+    fail without charging." The provider warns the Payan route lacks this: "Payan challenges before seller
+    input validation and wrong input can still settle" — hence the free eligibility check.
+problem_types:
+- status: 402
+  title: Payment Required
+  operations: 8
+  operation_ids: ["taskDayPlan", "websitePreflight", "verifiedUrlEvidence", "siteReleaseAudit", "auditX402", "x402Health", "downloadWayfarersDeck", "downloadQrCampaignPack"]
+  declared_media_type: null
+  declared_schema: null
+  format: x402 v2 PaymentRequired challenge (header) + route-specific JSON body
+  retryable: true
+  is_an_error: false
+  meaning: >-
+    The server quoting its price. Declared on every paid operation as "Payment Required. An x402-capable
+    buyer client must validate the challenge and retry once with PAYMENT-SIGNATURE; plain curl only obtains
+    the HTTP 402 challenge and does not pay." The PAYMENT-REQUIRED header decodes to {x402Version: 2, error:
+    "Payment required", resource: {url, description, mimeType, serviceName?, tags?, iconUrl?}, accepts:
+    [{scheme: exact, network: eip155:8453, amount, asset, payTo, maxTimeoutSeconds: 300, extra: {name: USD
+    Coin, version: '2'}}], extensions: {bazaar: ...}}.
+  observed_bodies:
+    - {operation: verifiedUrlEvidence, body: '{schemaVersion: 1.0.0, product: Verified URL Evidence Snapshot, resource: /url-evidence, method: GET, price: {amountAtomic: "1000000", display: 1.00 USDC, network: eip155:8453}, defaultQuery, paymentRequired: true, x402ClientRequired: true, authoritativePaymentTerms: "PAYMENT-REQUIRED response header", discovery: {openapi, manifest}, note}'}
+    - {operation: siteReleaseAudit, body: '{schemaVersion: 1.0.0, product, checkKind: x402-checkout-body-binding, resource: /site-release-audit, inputSha256: <sha256 of the exact JSON body>, paymentWillNotSettle: true}', note: 'the body echoes the SHA-256 the eligibility check bound, so a client can verify it is paying for the checked body'}
+    - {operation: downloadWayfarersDeck, body: '{}'}
+    - {operation: websitePreflight, body: '{}', note: 'returned even for an invalid body — see ordering'}
+  remediation: >-
+    Pick accepts[0], have an x402 v2 client sign the exact-scheme USDC authorization for amount/payTo on
+    eip155:8453, and retry the IDENTICAL request once with the signed payload in PAYMENT-SIGNATURE. Do not
+    auto-retry after an ambiguous result — the provider says so on every surface.
+  response_headers: [PAYMENT-REQUIRED]
+  spec_defect: 'The 402 is declared with a description and no content block on all 8 operations, so the one response every buyer must parse has no schema in the contract. overlays/agent402-dev-openapi-overlay.yaml adds the observed shape.'
+  evidence: {url: 'https://agent402.dev/url-evidence?url=https://example.com/', method: GET, status: 402, content_type: 'application/json; charset=utf-8', bytes: 566}
+- status: 400
+  title: Invalid request
+  operations: 6
+  operation_ids: ["taskDayPlan", "websitePreflight", "verifiedUrlEvidence", "siteReleaseAudit", "auditX402", "x402Health"]
+  declared_media_type: null
+  declared_schema: null
+  retryable: false
+  meaning: 'taskDayPlan: "Invalid tasks, dependency graph, bounds, or RFC3339 timestamp"; the six URL-taking routes: "Invalid or unsafe public target" (verifiedUrlEvidence adds "; payment does not settle").'
+  remediation: 'Validate against the request schema first (PublicUrlInput: https:// only, maxLength 2048, public IPv4 DNS answer; X402AuditInput: url + optional method; TaskDayPlanInput: tasks, available_minutes, start_at, strategy all required). On paid routes a 400 is only reachable AFTER payment verification, and settlement is cancelled.'
+  observed: 'not observed unauthenticated — payment precedes validation on paid routes'
+- status: 422
+  title: Exact input or target is ineligible
+  operations: 1
+  operation_ids: [siteReleaseAuditEligibility]
+  media_type: application/json
+  schema: '#/components/schemas/SiteAuditEligibility'
+  retryable: false
+  meaning: 'The free pre-payment check failed for this exact body. Observed reasons: invalid_input (malformed JSON, inputSha256 null), invalid_target (a non-URL string, or an http:// URL). A valid target returns 200 with eligibility: eligible, reason: main_document_deliverable and a validUntil five minutes out.'
+  remediation: 'Fix the body and re-check; never pay a body that did not pass. The same object carries purchaseBinding (offerId, priceCents 500, amountAtomic 5000000, directRoute, payanRoute) so the pay step can be built from it.'
+  evidence: {url: https://agent402.dev/site-release-audit/eligibility, method: POST, body: '{"url":"notaurl"}', status: 422, content_type: 'application/json; charset=utf-8'}
+- status: 429
+  title: Ephemeral client or target rate limit reached
+  operations: 1
+  operation_ids: [siteReleaseAuditEligibility]
+  media_type: application/json
+  schema: '#/components/schemas/SiteAuditEligibility'
+  retryable: true
+  response_headers: [Retry-After]
+  meaning: 'The eligibility probe is rate-limited per client and per TARGET host (so many callers checking the same site share a ceiling). The only 429 declared in the contract.'
+  remediation: 'Honour Retry-After. Limits are not published as numbers; /health exposes the operator''s limiter configuration (see rate-limits/).'
+  observed: 'not triggered by this pass (15 rapid GET /health all 200; eligibility called five times)'
+- status: 502
+  title: Bounded target observation failed
+  operations: 7
+  operation_ids: ["websitePreflight", "verifiedUrlEvidence", "siteReleaseAudit", "siteReleaseAuditSample", "siteReleaseAuditMethodology", "auditX402", "x402Health"]
+  declared_media_type: null
+  retryable: true
+  meaning: 'The upstream fetch of the caller-supplied target (or, for sample/methodology, the fixed example.com target) failed within the bounded observation (12 s total deadline, 512 KiB cap, 3 redirects, public-IPv4 pinning). On paid routes "payment does not settle".'
+  remediation: 'Check the target is publicly reachable over HTTPS on 443 with a public IPv4 answer, then retry.'
+- status: 503
+  title: Transport eligibility is unknown or local probe capacity is full
+  operations: 1
+  operation_ids: [siteReleaseAuditEligibility]
+  media_type: application/json
+  schema: '#/components/schemas/SiteAuditEligibility'
+  retryable: true
+  meaning: 'The free check could not run — the provider''s own probe pool is saturated or the transport answer was indeterminate. Not a verdict on the target.'
+- status: 404
+  title: Not Found
+  operations: 0
+  declared: false
+  media_type: text/plain
+  observed_body: '404 Not Found'
+  meaning: 'nginx default for any path outside the catalog; also the GET response of the A2A JSON-RPC endpoint (as application/json).'
+  evidence: {url: https://agent402.dev/docs, status: 404, content_type: 'text/plain; charset=UTF-8'}
+- status: 410
+  title: Gone
+  operations: 0
+  declared: false
+  media_type: text/html
+  meaning: 'The retired MCP surface: /mcp, /mcp/, /.well-known/mcp.json. Permanently removed; do not retry.'
+  evidence: {url: https://agent402.dev/mcp, status: 410}
+decline_codes: 'not applicable — agent402.dev is an x402 seller, not a payment authorizer; there is no decline-code surface. Settlement failure on the direct route simply cancels (purchaseOptions.direct.settlement).'
