@@ -1,0 +1,91 @@
+openapi: 3.2.0
+info:
+  title: Agent402 Dev Downloads API
+  version: 1.7.0
+  contact:
+    name: AI Discovery Site Audit
+    url: https://agent402.dev/site-release-audit
+  x-guidance: 'Use siteReleaseAudit for the primary $5 AI Discovery Site Audit. First POST the exact body to the free /site-release-audit/eligibility support route; it checks bounded main-document delivery but returns no score, findings, root observations, or remediations. Then submit the unchanged body promptly with an x402-capable buyer client that validates the exact v2 Base-USDC terms and supplies PAYMENT-SIGNATURE. Plain curl is only a 402 probe: it inspects the challenge, is not checkout, and does not pay. Direct x402 cancels settlement on a 4xx/5xx report response; Payan challenges before seller input validation and wrong input can still settle. Inspect GET /site-release-audit/sample.json and GET /site-release-audit/methodology.json for the current v1.1 contract. GET /site-release-audit/proof/v1/case-study.json is the immutable seller-controlled base proof; it predates and does not prove root-file observation.'
+  description: 'Operations tagged Downloads across 2 of this provider''s published API definitions: agent402-dev-openapi.json, agent402-dev-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://agent402.dev
+tags:
+- name: Downloads
+paths:
+  /download:
+    get:
+      operationId: downloadWayfarersDeck
+      summary: Download Wayfarer's Deck quest-card kit
+      description: Returns the complete offline quest-card workshop ZIP.
+      tags:
+      - Downloads
+      x-payment-info:
+        price:
+          mode: fixed
+          currency: USD
+          amount: '5.99'
+        protocols:
+        - x402: {}
+      x-price: $5.99
+      parameters:
+      - name: version
+        in: query
+        required: false
+        description: Optional archive version selector.
+        schema:
+          type: string
+          const: '1.0'
+      responses:
+        '200':
+          description: ZIP archive
+          headers:
+            X-Content-SHA256:
+              schema:
+                type: string
+                pattern: ^[a-f0-9]{64}$
+          content:
+            application/zip: {}
+        '402':
+          description: Payment Required. An x402-capable buyer client must validate the challenge and retry once with PAYMENT-SIGNATURE; plain curl only obtains this 402 and does not pay.
+    servers:
+    - url: https://agent402.dev
+  /qr-campaign-pack:
+    get:
+      operationId: downloadQrCampaignPack
+      summary: Download the Bulk QR Campaign Pack
+      description: Returns the offline CSV/TSV/JSON-to-SVG/PNG workshop ZIP.
+      tags:
+      - Downloads
+      x-payment-info:
+        price:
+          mode: fixed
+          currency: USD
+          amount: '5.99'
+        protocols:
+        - x402: {}
+      x-price: $5.99
+      parameters:
+      - name: version
+        in: query
+        required: false
+        description: Optional archive version selector.
+        schema:
+          type: string
+          const: 1.0.0
+      responses:
+        '200':
+          description: ZIP archive
+          headers:
+            X-Content-SHA256:
+              schema:
+                type: string
+                pattern: ^[a-f0-9]{64}$
+          content:
+            application/zip: {}
+        '402':
+          description: Payment Required. An x402-capable buyer client must validate the challenge and retry once with PAYMENT-SIGNATURE; plain curl only obtains this 402 and does not pay.
+    servers:
+    - url: https://agent402.dev
+x-refined-from:
+- agent402-dev-openapi.json
+- agent402-dev-openapi.yml

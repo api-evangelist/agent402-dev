@@ -40,65 +40,86 @@ tags:
 - Developer Tools
 - Base
 apis:
-- aid: agent402-dev:agent402-direct-x402-http-resources
-  name: Agent402 Direct x402 HTTP Resources
-  description: >-
-    Eight x402-priced and four free direct HTTP resources on agent402.dev, described by one OpenAPI 3.1 contract
-    (info.version 1.7.0, 12 operations, 14 schemas): the 5.00 USDC AI Discovery Site Audit with its free eligibility
-    check, sample, methodology and frozen case study; the 1.00 USDC Verified URL Evidence Snapshot; a 0.05 USDC
-    website preflight; a 0.01 USDC x402 endpoint health check and a 5.99 USDC x402 launch audit; a 0.01 USDC deterministic
-    task-day planner; and two 5.99 USDC ZIP downloads. Every paid route answers an unpaid request with HTTP 402
-    and a PAYMENT-REQUIRED challenge (exact scheme, USDC on eip155:8453, 300-second window) and is paid by retrying
-    the identical request with PAYMENT-SIGNATURE; every report carries a stable id and a SHA-256 digest of itself.
-  image: https://agent402.dev/favicon.ico
+- aid: agent402-dev:agent402-dev-developer-tools-api
+  name: agent402.dev Developer tools API
+  description: The Developer tools API from agent402.dev — 9 operation(s) for developer tools.
   humanURL: https://agent402.dev/
-  baseURL: https://agent402.dev
   tags:
-  - x402
-  - Website Audits
-  - Technical SEO
-  - URL Evidence
-  - x402 Endpoint Audit
-  - Task Scheduling
-  - Downloads
+  - Developer tools
   properties:
   - type: OpenAPI
-    url: openapi/agent402-dev-openapi.yml
-  - type: OpenAPI
-    name: OpenAPI 3.1.0 as served by the provider (verbatim copy in openapi/_original/)
-    url: https://agent402.dev/openapi.json
+    url: openapi/agent402-dev-developer-tools-api-openapi.yml
   - type: Documentation
-    name: Human and Agent docs — overview, direct call flow, 402 retry flow, endpoint reference and resource catalog
-      (all sections of the homepage)
     url: https://agent402.dev/
   - type: Documentation
-    name: AI Discovery Site Audit — product page, buyer setup, free eligibility check, proof and 402 inspection
-      tools
     url: https://agent402.dev/site-release-audit
   - type: Documentation
-    name: Deterministic Task Priority & Day Scheduler — resource page (GET serves the human page; POST is the paid
-      call)
     url: https://agent402.dev/task-day-plan
   - type: Documentation
-    name: x402 Launch Readiness Audit — resource page
     url: https://agent402.dev/x402-audit
   - type: APIReference
-    name: Endpoint Reference and Resource Catalog tables (homepage)
     url: https://agent402.dev/
   - type: GettingStarted
-    name: 'Agent Quickstart and Direct HTTP Flow (homepage): /openapi.json -> /.well-known/x402 -> resource URL
-      -> pay on 402'
     url: https://agent402.dev/
   - type: Examples
     url: examples/agent402-dev-examples.yml
-  - type: Overlay
-    url: overlays/agent402-dev-openapi-overlay.yaml
   - type: X-X402Discovery
-    name: x402 v2 resource manifest — prices, network, asset, payee (the provider says to treat it as authoritative;
-      verbatim copy in well-known/agent402-dev-x402.json)
     url: https://agent402.dev/.well-known/x402
   - type: Metrics
-    name: Public settlement metrics snapshot (JSON)
+    url: https://agent402.dev/metrics
+- aid: agent402-dev:agent402-dev-downloads-api
+  name: agent402.dev Downloads API
+  description: The Downloads API from agent402.dev — 2 operation(s) for downloads.
+  humanURL: https://agent402.dev/
+  tags:
+  - Downloads
+  properties:
+  - type: OpenAPI
+    url: openapi/agent402-dev-downloads-api-openapi.yml
+  - type: Documentation
+    url: https://agent402.dev/
+  - type: Documentation
+    url: https://agent402.dev/site-release-audit
+  - type: Documentation
+    url: https://agent402.dev/task-day-plan
+  - type: Documentation
+    url: https://agent402.dev/x402-audit
+  - type: APIReference
+    url: https://agent402.dev/
+  - type: GettingStarted
+    url: https://agent402.dev/
+  - type: Examples
+    url: examples/agent402-dev-examples.yml
+  - type: X-X402Discovery
+    url: https://agent402.dev/.well-known/x402
+  - type: Metrics
+    url: https://agent402.dev/metrics
+- aid: agent402-dev:agent402-dev-productivity-api
+  name: agent402.dev Productivity API
+  description: The Productivity API from agent402.dev — 1 operation(s) for productivity.
+  humanURL: https://agent402.dev/
+  tags:
+  - Productivity
+  properties:
+  - type: OpenAPI
+    url: openapi/agent402-dev-productivity-api-openapi.yml
+  - type: Documentation
+    url: https://agent402.dev/
+  - type: Documentation
+    url: https://agent402.dev/site-release-audit
+  - type: Documentation
+    url: https://agent402.dev/task-day-plan
+  - type: Documentation
+    url: https://agent402.dev/x402-audit
+  - type: APIReference
+    url: https://agent402.dev/
+  - type: GettingStarted
+    url: https://agent402.dev/
+  - type: Examples
+    url: examples/agent402-dev-examples.yml
+  - type: X-X402Discovery
+    url: https://agent402.dev/.well-known/x402
+  - type: Metrics
     url: https://agent402.dev/metrics
 maintainers:
 - FN: Kin Lane
@@ -106,6 +127,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Overlay
+  url: overlays/agent402-dev-openapi-overlay.yaml
 - type: Website
   url: https://agent402.dev/
 - type: Pricing
@@ -161,3 +184,17 @@ x-enrichment:
   status: enriched
   artifacts_added: 28
   pass: local-v3
+x-x402:
+  verified: true
+  probed: '2026-09-24'
+  url: "https://agent402.dev/download"
+  evidence:
+  - "header:payment-required"
+  control: 404
+x-a2a:
+  verified: true
+  probed: '2026-09-26'
+  url: "https://agent402.dev/.well-known/agent-card.json"
+  grade: "conformant"
+  protocol_version: "0.3.0"
+  control: 404

@@ -1,0 +1,316 @@
+openapi: 3.2.0
+info:
+  title: Agent402 Dev Productivity API
+  version: 1.7.0
+  contact:
+    name: AI Discovery Site Audit
+    url: https://agent402.dev/site-release-audit
+  x-guidance: 'Use siteReleaseAudit for the primary $5 AI Discovery Site Audit. First POST the exact body to the free /site-release-audit/eligibility support route; it checks bounded main-document delivery but returns no score, findings, root observations, or remediations. Then submit the unchanged body promptly with an x402-capable buyer client that validates the exact v2 Base-USDC terms and supplies PAYMENT-SIGNATURE. Plain curl is only a 402 probe: it inspects the challenge, is not checkout, and does not pay. Direct x402 cancels settlement on a 4xx/5xx report response; Payan challenges before seller input validation and wrong input can still settle. Inspect GET /site-release-audit/sample.json and GET /site-release-audit/methodology.json for the current v1.1 contract. GET /site-release-audit/proof/v1/case-study.json is the immutable seller-controlled base proof; it predates and does not prove root-file observation.'
+  description: 'Operations tagged Productivity across 2 of this provider''s published API definitions: agent402-dev-openapi.json, agent402-dev-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://agent402.dev
+tags:
+- name: Productivity
+paths:
+  /task-day-plan:
+    post:
+      operationId: taskDayPlan
+      summary: Prioritize and schedule up to 50 tasks for $0.01
+      description: Returns a deterministic dependency-safe ranking, up to 24 sequential day blocks, unscheduled reasons, and SHA-256 integrity. No network, LLM, storage, or randomness.
+      tags:
+      - Productivity
+      x-payment-info:
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.01'
+        protocols:
+        - x402: {}
+      x-price: $0.01
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskDayPlanInput'
+      responses:
+        '200':
+          description: Deterministic task-day plan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskDayPlanReport'
+        '400':
+          description: Invalid tasks, dependency graph, bounds, or RFC3339 timestamp
+        '402':
+          description: Payment Required. An x402-capable buyer client must validate the challenge and retry once with PAYMENT-SIGNATURE; plain curl only obtains this 402 and does not pay.
+    servers:
+    - url: https://agent402.dev
+components:
+  schemas:
+    TaskDayPlanInput:
+      type: object
+      additionalProperties: false
+      required:
+      - tasks
+      - available_minutes
+      - start_at
+      - strategy
+      properties:
+        tasks:
+          type: array
+          maxItems: 50
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - id
+            - title
+            - importance
+            - duration_minutes
+            properties:
+              id:
+                type: string
+                minLength: 1
+                maxLength: 64
+                description: Unique task ID without surrounding whitespace.
+              title:
+                type: string
+                minLength: 1
+                maxLength: 160
+              importance:
+                type: integer
+                minimum: 1
+                maximum: 5
+              duration_minutes:
+                type: integer
+                minimum: 5
+                maximum: 480
+              deadline:
+                type: string
+                format: date-time
+                maxLength: 40
+                description: Optional RFC3339 deadline with an explicit timezone.
+              dependency_ids:
+                type: array
+                maxItems: 49
+                uniqueItems: true
+                items:
+                  type: string
+                  minLength: 1
+                  maxLength: 64
+        available_minutes:
+          type: integer
+          minimum: 0
+          maximum: 1440
+        start_at:
+          type: string
+          format: date-time
+          maxLength: 40
+          description: RFC3339 day-plan start with an explicit timezone.
+        strategy:
+          type: string
+          enum:
+          - balanced
+          - deadline
+          - impact
+    TaskDayPlanReport:
+      type: object
+      additionalProperties: false
+      required:
+      - schema_version
+      - product
+      - strategy
+      - start_at
+      - available_minutes
+      - scheduled_minutes
+      - remaining_minutes
+      - ranked_tasks
+      - blocks
+      - unscheduled
+      - summary
+      - plan_id
+      - report_sha256
+      properties:
+        schema_version:
+          type: string
+          const: 1.0.0
+        product:
+          type: string
+          const: Deterministic Task Day Scheduler
+        strategy:
+          type: string
+          enum:
+          - balanced
+          - deadline
+          - impact
+        start_at:
+          type: string
+          format: date-time
+        available_minutes:
+          type: integer
+          minimum: 0
+          maximum: 1440
+        scheduled_minutes:
+          type: integer
+          minimum: 0
+          maximum: 1440
+        remaining_minutes:
+          type: integer
+          minimum: 0
+          maximum: 1440
+        ranked_tasks:
+          type: array
+          maxItems: 50
+          items:
+            type: object
+            required:
+            - rank
+            - task_id
+            - title
+            - importance
+            - duration_minutes
+            - deadline
+            - dependency_ids
+            - disposition
+            properties:
+              rank:
+                type: integer
+                minimum: 1
+                maximum: 50
+              task_id:
+                type: string
+                maxLength: 64
+              title:
+                type: string
+                maxLength: 160
+              importance:
+                type: integer
+                minimum: 1
+                maximum: 5
+              duration_minutes:
+                type: integer
+                minimum: 5
+                maximum: 480
+              deadline:
+                type:
+                - string
+                - 'null'
+              dependency_ids:
+                type: array
+                maxItems: 49
+                items:
+                  type: string
+                  maxLength: 64
+              disposition:
+                type: string
+                enum:
+                - scheduled
+                - unscheduled
+        blocks:
+          type: array
+          maxItems: 24
+          items:
+            type: object
+            required:
+            - block
+            - task_id
+            - title
+            - start_at
+            - end_at
+            - duration_minutes
+            - deadline
+            - deadline_met
+            properties:
+              block:
+                type: integer
+                minimum: 1
+                maximum: 24
+              task_id:
+                type: string
+                maxLength: 64
+              title:
+                type: string
+                maxLength: 160
+              start_at:
+                type: string
+                format: date-time
+              end_at:
+                type: string
+                format: date-time
+              duration_minutes:
+                type: integer
+                minimum: 5
+                maximum: 480
+              deadline:
+                type:
+                - string
+                - 'null'
+              deadline_met:
+                type:
+                - boolean
+                - 'null'
+        unscheduled:
+          type: array
+          maxItems: 50
+          items:
+            type: object
+            required:
+            - task_id
+            - title
+            - reason
+            - message
+            properties:
+              task_id:
+                type: string
+                maxLength: 64
+              title:
+                type: string
+                maxLength: 160
+              reason:
+                type: string
+                enum:
+                - insufficient_time
+                - block_limit
+                - dependency_unscheduled
+              message:
+                type: string
+              blocked_by:
+                type: array
+                maxItems: 49
+                items:
+                  type: string
+                  maxLength: 64
+        summary:
+          type: object
+          required:
+          - task_count
+          - scheduled_count
+          - unscheduled_count
+          - block_count
+          properties:
+            task_count:
+              type: integer
+              minimum: 0
+              maximum: 50
+            scheduled_count:
+              type: integer
+              minimum: 0
+              maximum: 24
+            unscheduled_count:
+              type: integer
+              minimum: 0
+              maximum: 50
+            block_count:
+              type: integer
+              minimum: 0
+              maximum: 24
+        plan_id:
+          type: string
+          pattern: ^[a-f0-9]{24}$
+        report_sha256:
+          type: string
+          pattern: ^[a-f0-9]{64}$
+x-refined-from:
+- agent402-dev-openapi.json
+- agent402-dev-openapi.yml
