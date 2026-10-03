@@ -1,12 +1,12 @@
 openapi: 3.2.0
 info:
-  title: Agent402 Dev Productivity API
+  title: AI Discovery Site Audit — AEO/GEO Fix Pack | agent402.dev…
   version: 1.7.0
+  description: 'Primary product: five fixed remediation slots for JSON-LD, metadata, robots.txt, llms.txt, and sitemap.xml. Copy-paste code is included only when observed evidence permits; otherwise the slot reports an explicit review, none, or needs-input action. Includes a $5, 22-check technical SEO/AEO/GEO audit and seven fixed agent-discovery findings for one public HTTPS page with at least one public IPv4 DNS answer. Existing auxiliary x402 tools remain available on their documented paths.'
+  x-guidance: 'Use siteReleaseAudit for the primary $5 AI Discovery Site Audit. First POST the exact body to the free /site-release-audit/eligibility support route; it checks bounded main-document delivery but returns no score, findings, root observations, or remediations. Then submit the unchanged body promptly with an x402-capable buyer client that validates the exact v2 Base-USDC terms and supplies PAYMENT-SIGNATURE. Plain curl is only a 402 probe: it inspects the challenge, is not checkout, and does not pay. Direct x402 cancels settlement on a 4xx/5xx report response; Payan challenges before seller input validation and wrong input can still settle. Inspect GET /site-release-audit/sample.json and GET /site-release-audit/methodology.json for the current v1.1 contract. GET /site-release-audit/proof/v1/case-study.json is the immutable seller-controlled base proof; it predates and does not prove root-file observation.'
   contact:
     name: AI Discovery Site Audit
     url: https://agent402.dev/site-release-audit
-  x-guidance: 'Use siteReleaseAudit for the primary $5 AI Discovery Site Audit. First POST the exact body to the free /site-release-audit/eligibility support route; it checks bounded main-document delivery but returns no score, findings, root observations, or remediations. Then submit the unchanged body promptly with an x402-capable buyer client that validates the exact v2 Base-USDC terms and supplies PAYMENT-SIGNATURE. Plain curl is only a 402 probe: it inspects the challenge, is not checkout, and does not pay. Direct x402 cancels settlement on a 4xx/5xx report response; Payan challenges before seller input validation and wrong input can still settle. Inspect GET /site-release-audit/sample.json and GET /site-release-audit/methodology.json for the current v1.1 contract. GET /site-release-audit/proof/v1/case-study.json is the immutable seller-controlled base proof; it predates and does not prove root-file observation.'
-  description: 'Operations tagged Productivity across 2 of this provider''s published API definitions: agent402-dev-openapi.json, agent402-dev-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://agent402.dev
 tags:
@@ -44,8 +44,6 @@ paths:
           description: Invalid tasks, dependency graph, bounds, or RFC3339 timestamp
         '402':
           description: Payment Required. An x402-capable buyer client must validate the challenge and retry once with PAYMENT-SIGNATURE; plain curl only obtains this 402 and does not pay.
-    servers:
-    - url: https://agent402.dev
 components:
   schemas:
     TaskDayPlanInput:
@@ -311,6 +309,3 @@ components:
         report_sha256:
           type: string
           pattern: ^[a-f0-9]{64}$
-x-refined-from:
-- agent402-dev-openapi.json
-- agent402-dev-openapi.yml

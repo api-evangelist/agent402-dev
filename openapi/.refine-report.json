@@ -1,33 +1,29 @@
 {
   "provider": "agent402-dev",
   "sources": [
-    "_original/agent402-dev-openapi.json",
-    "agent402-dev-openapi.yml"
+    "_original/agent402-dev-openapi.json"
   ],
   "outputs": [
     "agent402-dev-developer-tools-api-openapi.yml",
     "agent402-dev-downloads-api-openapi.yml",
     "agent402-dev-productivity-api-openapi.yml"
   ],
-  "archived": [
-    "archived openapi/agent402-dev-openapi.yml"
-  ],
+  "archived": [],
   "errors": [],
   "warnings": [],
   "notes": [
+    "1 archived document(s) dropped as subsets of other archived documents",
     "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
     "agent402-dev-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
     "agent402-dev-openapi.json: declared missing tag: Developer tools",
     "agent402-dev-openapi.json: declared missing tag: Downloads",
     "agent402-dev-openapi.json: declared missing tag: Productivity",
-    "agent402-dev-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "agent402-dev-openapi.yml: declared missing tag: Developer tools",
-    "agent402-dev-openapi.yml: declared missing tag: Downloads",
-    "agent402-dev-openapi.yml: declared missing tag: Productivity",
-    "tag 'Developer tools' spans 2 source specs (agent402-dev-openapi.json, agent402-dev-openapi.yml): per-path servers applied",
-    "tag 'Downloads' spans 2 source specs (agent402-dev-openapi.json, agent402-dev-openapi.yml): per-path servers applied",
-    "tag 'Productivity' spans 2 source specs (agent402-dev-openapi.json, agent402-dev-openapi.yml): per-path servers applied",
-    "apis.yml register: written (+3 apis, 3 total)"
+    "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "_original/agent402-dev-openapi.yml: archived document superseded by a larger archived document",
+    "agent402-dev-developer-tools-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "agent402-dev-downloads-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "agent402-dev-productivity-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
