@@ -304,86 +304,6 @@ paths:
           description: Bounded target observation failed
 components:
   schemas:
-    WebsiteAuditCheck:
-      type: object
-      additionalProperties: false
-      required:
-      - id
-      - section
-      - title
-      - status
-      - points
-      - earned
-      - evidence
-      - fix
-      properties:
-        id:
-          type: string
-        section:
-          type: string
-          enum:
-          - transport
-          - security
-          - seo
-          - accessibility
-        title:
-          type: string
-        status:
-          type: string
-          enum:
-          - pass
-          - warning
-          - fail
-        points:
-          type: number
-        earned:
-          type: number
-        evidence:
-          type: object
-          additionalProperties: true
-        fix:
-          type:
-          - string
-          - 'null'
-          description: Prioritized copy-ready remediation when the check does not pass.
-    PublicUrlInput:
-      type: object
-      additionalProperties: false
-      required:
-      - url
-      properties:
-        url:
-          type: string
-          format: uri
-          pattern: ^https://
-          maxLength: 2048
-          description: Public HTTPS URL with at least one public IPv4 DNS answer.
-    UrlPreflightCheck:
-      type: object
-      additionalProperties: false
-      required:
-      - id
-      - status
-      - message
-      properties:
-        id:
-          type: string
-          enum:
-          - public-https
-          - http-response
-          - direct-url
-          - hsts
-          - content-security-policy
-          - nosniff
-          - frame-policy
-        status:
-          type: string
-          enum:
-          - pass
-          - warning
-          - fail
-        message:
-          type: string
     UrlEvidenceReport:
       type: object
       additionalProperties: false
@@ -521,6 +441,117 @@ components:
         reportSha256:
           type: string
           pattern: ^[a-f0-9]{64}$
+    UrlPreflightCheck:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - status
+      - message
+      properties:
+        id:
+          type: string
+          enum:
+          - public-https
+          - http-response
+          - direct-url
+          - hsts
+          - content-security-policy
+          - nosniff
+          - frame-policy
+        status:
+          type: string
+          enum:
+          - pass
+          - warning
+          - fail
+        message:
+          type: string
+    WebsiteAuditCheck:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - section
+      - title
+      - status
+      - points
+      - earned
+      - evidence
+      - fix
+      properties:
+        id:
+          type: string
+        section:
+          type: string
+          enum:
+          - transport
+          - security
+          - seo
+          - accessibility
+        title:
+          type: string
+        status:
+          type: string
+          enum:
+          - pass
+          - warning
+          - fail
+        points:
+          type: number
+        earned:
+          type: number
+        evidence:
+          type: object
+          additionalProperties: true
+        fix:
+          type:
+          - string
+          - 'null'
+          description: Prioritized copy-ready remediation when the check does not pass.
+    PublicUrlInput:
+      type: object
+      additionalProperties: false
+      required:
+      - url
+      properties:
+        url:
+          type: string
+          format: uri
+          pattern: ^https://
+          maxLength: 2048
+          description: Public HTTPS URL with at least one public IPv4 DNS answer.
+    X402AuditCheck:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - status
+      - message
+      properties:
+        id:
+          type: string
+          enum:
+          - http-402
+          - protocol-v2
+          - payment-options
+          - payment-fields
+          - base-usdc
+          - resource-binding
+          - bazaar-discovery
+          - protected-body
+        status:
+          type: string
+          enum:
+          - pass
+          - warning
+          - fail
+        message:
+          type: string
+          description: Observed payment, discovery, or protected-body evidence.
+        remediation:
+          type: string
+          description: Actionable fix when the check does not pass.
     X402AuditReport:
       type: object
       required:
@@ -665,6 +696,267 @@ components:
         evidenceId:
           type: string
           pattern: ^[a-f0-9]{24}$
+        reportSha256:
+          type: string
+          pattern: ^[a-f0-9]{64}$
+    X402AuditInput:
+      type: object
+      additionalProperties: false
+      required:
+      - url
+      properties:
+        url:
+          type: string
+          format: uri
+          pattern: ^https://
+          maxLength: 2048
+          description: Public HTTPS endpoint with at least one public IPv4 DNS answer.
+        method:
+          type: string
+          enum:
+          - GET
+          default: GET
+    SiteAuditCaseStudy:
+      type: object
+      additionalProperties: true
+      required:
+      - schemaVersion
+      - caseStudyId
+      - evidenceKind
+      - livePaidRouteUsed
+      - selfAuditBlocked
+      - sourceRepresentations
+      - patch
+      - reports
+      - delta
+      - caveats
+      - integrity
+      properties:
+        schemaVersion:
+          type: string
+          const: 1.0.0
+        caseStudyId:
+          type: string
+          pattern: ^[a-f0-9]{24}$
+        evidenceKind:
+          type: string
+          const: seller-controlled-deterministic-replay
+        livePaidRouteUsed:
+          type: boolean
+          const: false
+        selfAuditBlocked:
+          type: boolean
+          const: true
+        sourceRepresentations:
+          type: object
+          required:
+          - before
+          - after
+          additionalProperties: true
+        patch:
+          type: object
+          additionalProperties: true
+        reports:
+          type: object
+          required:
+          - before
+          - after
+          additionalProperties: true
+        delta:
+          type: object
+          additionalProperties: true
+        caveats:
+          type: array
+          minItems: 1
+          items:
+            type: string
+        integrity:
+          type: object
+          additionalProperties: true
+    SiteAuditEligibility:
+      type: object
+      additionalProperties: false
+      required:
+      - schemaVersion
+      - product
+      - checkKind
+      - checkedAt
+      - validUntil
+      - eligibility
+      - reason
+      - inputSha256
+      - observation
+      - purchaseBinding
+      properties:
+        schemaVersion:
+          type: string
+          const: 1.0.0
+        product:
+          type: string
+          const: AI Discovery Site Audit — AEO/GEO Fix Pack
+        checkKind:
+          type: string
+          const: pre-payment-delivery-eligibility
+        checkedAt:
+          type: string
+          format: date-time
+        validUntil:
+          type: string
+          format: date-time
+        eligibility:
+          type: string
+          enum:
+          - eligible
+          - ineligible
+          - unknown
+        reason:
+          type: string
+          enum:
+          - main_document_deliverable
+          - invalid_input
+          - invalid_target
+          - transport_unavailable
+          - rate_limited
+          - capacity_limited
+        inputSha256:
+          type:
+          - string
+          - 'null'
+          pattern: ^[a-f0-9]{64}$
+        observation:
+          oneOf:
+          - type: 'null'
+          - type: object
+            additionalProperties: false
+            required:
+            - method
+            - requestedUrlSha256
+            - finalUrlSha256
+            - redirectCount
+            - status
+            - contentType
+            - rootRequests
+            properties:
+              method:
+                type: string
+                const: GET
+              requestedUrlSha256:
+                type: string
+                pattern: ^[a-f0-9]{64}$
+              finalUrlSha256:
+                type: string
+                pattern: ^[a-f0-9]{64}$
+              redirectCount:
+                type: integer
+                minimum: 0
+                maximum: 3
+              status:
+                type: integer
+                minimum: 100
+                maximum: 599
+              contentType:
+                type:
+                - string
+                - 'null'
+                maxLength: 100
+              rootRequests:
+                type: integer
+                const: 0
+        purchaseBinding:
+          type: object
+          additionalProperties: false
+          required:
+          - offerId
+          - priceCents
+          - amountAtomic
+          - directRoute
+          - payanRoute
+          - submitUnchangedBodyPromptly
+          - caveat
+          properties:
+            offerId:
+              type: string
+              const: kh70zbzh8m5awkegpvn7tc82798aed20
+            priceCents:
+              type: integer
+              const: 500
+            amountAtomic:
+              type: string
+              const: '5000000'
+            directRoute:
+              type: string
+              const: /site-release-audit
+            payanRoute:
+              type: string
+              const: https://payanagent.com/x402/kh70zbzh8m5awkegpvn7tc82798aed20
+            submitUnchangedBodyPromptly:
+              type: boolean
+              const: true
+            caveat:
+              type: string
+              minLength: 1
+              maxLength: 300
+    X402HealthReport:
+      type: object
+      additionalProperties: false
+      required:
+      - product
+      - version
+      - healthId
+      - checkedAt
+      - target
+      - health
+      - payment
+      - disclaimer
+      - reportSha256
+      properties:
+        product:
+          type: string
+          const: x402 Endpoint Health Snapshot
+        version:
+          type: string
+          const: 1.0.0
+        healthId:
+          type: string
+          pattern: ^[a-f0-9]{24}$
+        checkedAt:
+          type: string
+          format: date-time
+        target:
+          type: object
+          additionalProperties: true
+        health:
+          type: object
+          additionalProperties: false
+          required:
+          - healthy
+          - score
+          - challengeValid
+          - resourceBound
+          - baseCanonicalUsdc
+          - bazaarDiscoverable
+          properties:
+            healthy:
+              type: boolean
+            score:
+              type: integer
+              minimum: 0
+              maximum: 100
+            challengeValid:
+              type: boolean
+            resourceBound:
+              type: boolean
+            baseCanonicalUsdc:
+              type: boolean
+            bazaarDiscoverable:
+              type: boolean
+        payment:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+        disclaimer:
+          type: string
         reportSha256:
           type: string
           pattern: ^[a-f0-9]{64}$
@@ -1271,295 +1563,3 @@ components:
         reportSha256:
           type: string
           pattern: ^[a-f0-9]{64}$
-    X402HealthReport:
-      type: object
-      additionalProperties: false
-      required:
-      - product
-      - version
-      - healthId
-      - checkedAt
-      - target
-      - health
-      - payment
-      - disclaimer
-      - reportSha256
-      properties:
-        product:
-          type: string
-          const: x402 Endpoint Health Snapshot
-        version:
-          type: string
-          const: 1.0.0
-        healthId:
-          type: string
-          pattern: ^[a-f0-9]{24}$
-        checkedAt:
-          type: string
-          format: date-time
-        target:
-          type: object
-          additionalProperties: true
-        health:
-          type: object
-          additionalProperties: false
-          required:
-          - healthy
-          - score
-          - challengeValid
-          - resourceBound
-          - baseCanonicalUsdc
-          - bazaarDiscoverable
-          properties:
-            healthy:
-              type: boolean
-            score:
-              type: integer
-              minimum: 0
-              maximum: 100
-            challengeValid:
-              type: boolean
-            resourceBound:
-              type: boolean
-            baseCanonicalUsdc:
-              type: boolean
-            bazaarDiscoverable:
-              type: boolean
-        payment:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-        disclaimer:
-          type: string
-        reportSha256:
-          type: string
-          pattern: ^[a-f0-9]{64}$
-    SiteAuditCaseStudy:
-      type: object
-      additionalProperties: true
-      required:
-      - schemaVersion
-      - caseStudyId
-      - evidenceKind
-      - livePaidRouteUsed
-      - selfAuditBlocked
-      - sourceRepresentations
-      - patch
-      - reports
-      - delta
-      - caveats
-      - integrity
-      properties:
-        schemaVersion:
-          type: string
-          const: 1.0.0
-        caseStudyId:
-          type: string
-          pattern: ^[a-f0-9]{24}$
-        evidenceKind:
-          type: string
-          const: seller-controlled-deterministic-replay
-        livePaidRouteUsed:
-          type: boolean
-          const: false
-        selfAuditBlocked:
-          type: boolean
-          const: true
-        sourceRepresentations:
-          type: object
-          required:
-          - before
-          - after
-          additionalProperties: true
-        patch:
-          type: object
-          additionalProperties: true
-        reports:
-          type: object
-          required:
-          - before
-          - after
-          additionalProperties: true
-        delta:
-          type: object
-          additionalProperties: true
-        caveats:
-          type: array
-          minItems: 1
-          items:
-            type: string
-        integrity:
-          type: object
-          additionalProperties: true
-    X402AuditCheck:
-      type: object
-      additionalProperties: false
-      required:
-      - id
-      - status
-      - message
-      properties:
-        id:
-          type: string
-          enum:
-          - http-402
-          - protocol-v2
-          - payment-options
-          - payment-fields
-          - base-usdc
-          - resource-binding
-          - bazaar-discovery
-          - protected-body
-        status:
-          type: string
-          enum:
-          - pass
-          - warning
-          - fail
-        message:
-          type: string
-          description: Observed payment, discovery, or protected-body evidence.
-        remediation:
-          type: string
-          description: Actionable fix when the check does not pass.
-    X402AuditInput:
-      type: object
-      additionalProperties: false
-      required:
-      - url
-      properties:
-        url:
-          type: string
-          format: uri
-          pattern: ^https://
-          maxLength: 2048
-          description: Public HTTPS endpoint with at least one public IPv4 DNS answer.
-        method:
-          type: string
-          enum:
-          - GET
-          default: GET
-    SiteAuditEligibility:
-      type: object
-      additionalProperties: false
-      required:
-      - schemaVersion
-      - product
-      - checkKind
-      - checkedAt
-      - validUntil
-      - eligibility
-      - reason
-      - inputSha256
-      - observation
-      - purchaseBinding
-      properties:
-        schemaVersion:
-          type: string
-          const: 1.0.0
-        product:
-          type: string
-          const: AI Discovery Site Audit — AEO/GEO Fix Pack
-        checkKind:
-          type: string
-          const: pre-payment-delivery-eligibility
-        checkedAt:
-          type: string
-          format: date-time
-        validUntil:
-          type: string
-          format: date-time
-        eligibility:
-          type: string
-          enum:
-          - eligible
-          - ineligible
-          - unknown
-        reason:
-          type: string
-          enum:
-          - main_document_deliverable
-          - invalid_input
-          - invalid_target
-          - transport_unavailable
-          - rate_limited
-          - capacity_limited
-        inputSha256:
-          type:
-          - string
-          - 'null'
-          pattern: ^[a-f0-9]{64}$
-        observation:
-          oneOf:
-          - type: 'null'
-          - type: object
-            additionalProperties: false
-            required:
-            - method
-            - requestedUrlSha256
-            - finalUrlSha256
-            - redirectCount
-            - status
-            - contentType
-            - rootRequests
-            properties:
-              method:
-                type: string
-                const: GET
-              requestedUrlSha256:
-                type: string
-                pattern: ^[a-f0-9]{64}$
-              finalUrlSha256:
-                type: string
-                pattern: ^[a-f0-9]{64}$
-              redirectCount:
-                type: integer
-                minimum: 0
-                maximum: 3
-              status:
-                type: integer
-                minimum: 100
-                maximum: 599
-              contentType:
-                type:
-                - string
-                - 'null'
-                maxLength: 100
-              rootRequests:
-                type: integer
-                const: 0
-        purchaseBinding:
-          type: object
-          additionalProperties: false
-          required:
-          - offerId
-          - priceCents
-          - amountAtomic
-          - directRoute
-          - payanRoute
-          - submitUnchangedBodyPromptly
-          - caveat
-          properties:
-            offerId:
-              type: string
-              const: kh70zbzh8m5awkegpvn7tc82798aed20
-            priceCents:
-              type: integer
-              const: 500
-            amountAtomic:
-              type: string
-              const: '5000000'
-            directRoute:
-              type: string
-              const: /site-release-audit
-            payanRoute:
-              type: string
-              const: https://payanagent.com/x402/kh70zbzh8m5awkegpvn7tc82798aed20
-            submitUnchangedBodyPromptly:
-              type: boolean
-              const: true
-            caveat:
-              type: string
-              minLength: 1
-              maxLength: 300
