@@ -45,6 +45,8 @@ apis:
   description: The Developer tools API from agent402.dev — 9 operation(s) for developer tools.
   humanURL: https://agent402.dev/
   tags:
+  - Developer Tools
+  tags_raw:
   - Developer tools
   properties:
   - type: OpenAPI
