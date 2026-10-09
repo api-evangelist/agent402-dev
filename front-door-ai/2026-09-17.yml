@@ -1,0 +1,30 @@
+# Front Door AI Index — agent402-dev — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: agent402-dev
+  lexicon_version: '1.0'
+  probed_at: '2026-09-25'
+  host: agent402.dev
+  final_host: agent402.dev
+  ownership: own
+  owner: agent402-dev
+  shares_host_with: null
+  inherited_from: null
+  alias_of: null
+  verdict: scored
+  score: 6
+  band: 4
+  band_label: moderate
+  host_score: 6
+  density: 4.65
+  words: 1290
+  tiers:
+    agentic: 3
+    core: 3
+    model: 0
+  ambiguous: 11
+  top_terms:
+    agent: 11
+    AI: 3
+    llms.txt: 3

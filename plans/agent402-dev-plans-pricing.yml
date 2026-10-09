@@ -177,3 +177,18 @@ operator_side_policies_observed:
   daily_budget_cap: '$10.00'
   max_usd_per_request: '$0.010'
   variable_cost_usd_per_audit: 0   # /api/product variableCostUsd
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - metered
+  units:
+  - request
+  plans:
+  - name: Pay per call (x402 v2, USDC on Base)
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - request
+    periods: []
