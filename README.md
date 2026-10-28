@@ -64,12 +64,124 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-agent402.dev is a pay-per-call agent-commerce service that sells website release evidence and offline tools to AI agents over the x402 v2 protocol, settled in USDC on Base (eip155:8453) with no accounts or API keys. Its primary product is a 5.00 USDC AI Discovery Site Audit; seven auxiliary direct HTTP resources are priced from 0.01 to 5.99 USDC. The surface is published machine-first: an OpenAPI 3.1 contract, an x402 v2 manifest, a conformant A2A agent card, llms.txt and a JSON endpoint map. The operator is not named on the site.
+agent402.dev is a pay-per-call agent-commerce service that sells website release evidence and offline tools to AI agents over the x402 v2 protocol, settled in USDC on Base (eip155:8453) with no accounts, sign-up or API keys — payment is the authorization. Its primary product is a 5.00 USDC AI Discovery Site Audit: 22 deterministic technical SEO / AEO / GEO checks on one public HTTPS page plus five evidence-derived remediation slots for JSON-LD, metadata, robots.txt, llms.txt and sitemap.xml, with a free exact-body eligibility check, a live sample report and a machine-readable methodology published beside it. Seven auxiliary direct HTTP resources are priced from 0.01 to 5.99 USDC: a Verified URL Evidence Snapshot, a HEAD-only website preflight, an x402 endpoint health check and launch-readiness audit, a deterministic task-priority day scheduler, and two downloadable ZIP packs. The whole surface is published machine-first — an OpenAPI 3.1 contract at /openapi.json, an x402 v2 manifest at /.well-known/x402, a conformant A2A agent card, llms.txt and a JSON endpoint map at /meta.json — while the operator is not named anywhere on the site. An earlier MCP surface has been deliberately retired (410 Gone).
 
-- https://agent402.dev/
-- OpenAPI: https://agent402.dev/openapi.json (12 operations) — `openapi/`
-- x402 manifest: https://agent402.dev/.well-known/x402 — `well-known/`
-- A2A agent card: https://agent402.dev/.well-known/agent-card.json (graded conformant) — `a2a/`
-- llms.txt: https://agent402.dev/llms.txt — `llms/`
+**Areas:** Company · x402 · Agentic Payments · Agentic Commerce · AI Agents · A2A · Technical SEO · Website Audits · URL Evidence · Developer Tools · Base
 
-Profiled 2026-09-19 by the API Evangelist enrichment pipeline (local pass). Artifacts: `openapi/`, `a2a/`, `llms/`, `well-known/`, `mcp/` (candidate — the provider's MCP surface answers 410 Gone), `packages/`, `authentication/`, `conventions/`, `errors/`, `lifecycle/`, `conformance/`, `data-model/`, `sandbox/`, `plans/`, `rate-limits/`, `examples/`, `overlays/`, `skills/`, `regulatory/`, `agentic-access/`, `security/`.
+## agent402.dev on APIs.io
+
+Everything profiled for agent402.dev is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/agent402-dev/](https://apis.io/providers/agent402-dev/)** — or go straight to one of the APIs or properties below.
+
+### APIs (3)
+
+- [agent402.dev Developer tools API](https://apis.io/apis/agent402-dev/agent402-dev-developer-tools-api/) — The Developer tools API from agent402.dev — 9 operation(s) for developer tools.
+- [agent402.dev Downloads API](https://apis.io/apis/agent402-dev/agent402-dev-downloads-api/) — The Downloads API from agent402.dev — 2 operation(s) for downloads.
+- [agent402.dev Productivity API](https://apis.io/apis/agent402-dev/agent402-dev-productivity-api/) — The Productivity API from agent402.dev — 1 operation(s) for productivity.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [agent402-dev](https://apis.io/servers/agent402-dev/agent402-dev/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Agent402 Dev Agentic Access](https://apis.io/agentic-access/agent402-dev/agent402-dev-agentic-access/)
+
+#### Examples (2)
+
+Example requests and responses.
+
+- [Agent402 Dev Site Release Audit Sample](https://apis.io/examples/agent402-dev/agent402-dev-site-release-audit-sample/)
+- [Agent402 Dev Url Evidence 402 Challenge](https://apis.io/examples/agent402-dev/agent402-dev-url-evidence-402-challenge/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Agent402 Dev Openapi Overlay](https://apis.io/overlays/agent402-dev/agent402-dev-openapi-overlay/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Agent402 Dev Authentication](https://apis.io/security/agent402-dev/agent402-dev-authentication/)
+- [Agent402 Dev Domain Security](https://apis.io/security/agent402-dev/agent402-dev-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Agent402 Dev Plans Pricing](https://apis.io/plans/agent402-dev/agent402-dev-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Agent402 Dev Rate Limits](https://apis.io/rate-limits/agent402-dev/agent402-dev-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://agent402.dev/)
+- [Pricing](https://agent402.dev/)
+
+## API Evangelist rating
+
+**Kin Score 39.0** — thin · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 64.3 |
+| Contract quality | 51.1 |
+| Contract governance | 18.2 |
+| Operational transparency | 21.1 |
+| Developer ergonomics | 49.4 |
+| Access clarity | 31.6 |
+
+**Agent readiness 36.0** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | verified |
+| OpenAPI Examples | documented (partial credit) |
+| Rate Limit Signal | verified |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | conformant |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 15.2** — Payments
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/agent402-dev/](https://apis.io/providers/agent402-dev/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for agent402.dev: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/agent402-dev/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
