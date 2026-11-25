@@ -92,39 +92,45 @@ Model Context Protocol servers that expose the API to agents.
 
 Which operations an agent can call, which act, and which need a human in the loop.
 
-- [Agent402 Dev Agentic Access](https://apis.io/agentic-access/agent402-dev/agent402-dev-agentic-access/)
+- [agent402.dev Agentic Access](https://apis.io/agentic-access/agent402-dev/agent402-dev-agentic-access/)
 
 #### Examples (2)
 
 Example requests and responses.
 
-- [Agent402 Dev Site Release Audit Sample](https://apis.io/examples/agent402-dev/agent402-dev-site-release-audit-sample/)
-- [Agent402 Dev Url Evidence 402 Challenge](https://apis.io/examples/agent402-dev/agent402-dev-url-evidence-402-challenge/)
+- [agent402.dev Site Release Audit Sample](https://apis.io/examples/agent402-dev/agent402-dev-site-release-audit-sample/)
+- [agent402.dev Url Evidence 402 Challenge](https://apis.io/examples/agent402-dev/agent402-dev-url-evidence-402-challenge/)
 
 #### Overlays (1)
 
 OpenAPI overlays, including conversational phrasing for each operation.
 
-- [Agent402 Dev Openapi Overlay](https://apis.io/overlays/agent402-dev/agent402-dev-openapi-overlay/)
+- [agent402.dev Openapi Overlay](https://apis.io/overlays/agent402-dev/agent402-dev-openapi-overlay/)
+
+#### Governance rules (1)
+
+Spectral rulesets for the provider's contracts.
+
+- [agent402.dev API Rules](https://apis.io/rules/agent402-dev/agent402-dev-rules/)
 
 #### Security (2)
 
 Authentication, trust centre, and vulnerability disclosure.
 
-- [Agent402 Dev Authentication](https://apis.io/security/agent402-dev/agent402-dev-authentication/)
-- [Agent402 Dev Domain Security](https://apis.io/security/agent402-dev/agent402-dev-domain-security/)
+- [agent402.dev Authentication](https://apis.io/security/agent402-dev/agent402-dev-authentication/)
+- [agent402.dev Domain Security](https://apis.io/security/agent402-dev/agent402-dev-domain-security/)
 
 #### Plans and pricing (1)
 
 Published plans, tiers and prices.
 
-- [Agent402 Dev Plans Pricing](https://apis.io/plans/agent402-dev/agent402-dev-plans-pricing/)
+- [agent402.dev Plans Pricing](https://apis.io/plans/agent402-dev/agent402-dev-plans-pricing/)
 
 #### Rate limits (1)
 
 Published request limits.
 
-- [Agent402 Dev Rate Limits](https://apis.io/rate-limits/agent402-dev/agent402-dev-rate-limits/)
+- [agent402.dev Rate Limits](https://apis.io/rate-limits/agent402-dev/agent402-dev-rate-limits/)
 
 ## Where to find this API
 
@@ -135,18 +141,18 @@ Links to the company's own pages. This repository publishes no copy of their spe
 
 ## API Evangelist rating
 
-**Kin Score 39.0** — thin · rubric 0.24.0 · scored 2026-10-17
+**Kin Score 39.7** — developing · rubric 0.28.1 · scored 2026-11-21
 
 | Facet | Score |
 |---|---|
 | Discoverability | 64.3 |
-| Contract quality | 51.1 |
-| Contract governance | 18.2 |
-| Operational transparency | 21.1 |
+| Contract quality | 56.5 |
+| Contract governance | 31.8 |
+| Operational transparency | 19.0 |
 | Developer ergonomics | 49.4 |
-| Access clarity | 31.6 |
+| Access clarity | 25.5 |
 
-**Agent readiness 36.0** — agent-ready
+**Agent readiness 36.6** — agent-ready
 
 | Agent-readiness dimension | Result |
 |---|---|
@@ -169,8 +175,14 @@ Links to the company's own pages. This repository publishes no copy of their spe
 | Protected Resource Metadata | — |
 | Dynamic Client Registration | — |
 | Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | distinct |
+| MCP Tool Quality | na |
+| Onboarding Descriptor | — |
+| Dns Aid Index | na |
+| Markdown Negotiation | na |
 
-**Regulatory alignment 15.2** — Payments
+**Regulatory alignment 9.8** — Payments
 
 The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/agent402-dev/](https://apis.io/providers/agent402-dev/).
 
